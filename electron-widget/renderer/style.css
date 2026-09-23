@@ -1,0 +1,325 @@
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
+
+.widget {
+  position: relative;
+  width: 250px;
+  height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 18px;
+  -webkit-app-region: drag;
+}
+
+.stage {
+  position: relative;
+  width: 176px;
+  height: 176px;
+  -webkit-app-region: drag;
+}
+
+.disc-shadow {
+  position: absolute;
+  left: 13px;
+  top: 170px;
+  width: 150px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.22), transparent 65%);
+  filter: blur(1px);
+  z-index: 1;
+}
+
+.disc-wrap {
+  position: relative;
+  width: 176px;
+  height: 176px;
+  z-index: 2;
+}
+
+.disc {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: relative;
+  background: radial-gradient(circle at 32% 28%, #4c4c4c 0%, #1d1d1d 45%, #060606 100%);
+  box-shadow:
+    0 8px 16px rgba(0, 0, 0, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.07),
+    inset 0 0 34px rgba(0, 0, 0, 0.65);
+  animation: spin 5.5s linear infinite;
+  animation-play-state: paused;
+}
+
+.grooves {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-image: repeating-radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.055) 0px,
+    rgba(255, 255, 255, 0.055) 1px,
+    transparent 1.6px,
+    transparent 5px
+  );
+  mix-blend-mode: overlay;
+  opacity: 0.85;
+}
+
+.sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 200deg,
+    rgba(255, 255, 255, 0.14),
+    transparent 28%,
+    transparent 68%,
+    rgba(255, 255, 255, 0.09)
+  );
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  background: linear-gradient(135deg, #5a5a5a, #202020);
+  box-shadow:
+    0 0 0 3px rgba(0, 0, 0, 0.55),
+    0 0 0 4px rgba(255, 255, 255, 0.05),
+    0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.label img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.spindle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: #060606;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
+  z-index: 3;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.meta {
+  margin-top: 16px;
+  width: 190px;
+  text-align: center;
+  -webkit-app-region: drag;
+}
+
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  height: 18px;
+  position: relative;
+}
+
+.marquee-track {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+}
+
+.marquee-item {
+  display: inline-block;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+}
+
+.marquee-gap {
+  display: inline-block;
+  width: 28px;
+  flex: 0 0 auto;
+}
+
+.marquee:not(.scroll) {
+  display: flex;
+  justify-content: center;
+}
+
+.marquee:not(.scroll) .marquee-track {
+  transform: translateX(0) !important;
+  animation: none !important;
+}
+
+.marquee:not(.scroll) .marquee-gap,
+.marquee:not(.scroll) #titleDup {
+  display: none;
+}
+
+.marquee.scroll .marquee-track {
+  animation: marquee-loop linear infinite;
+  animation-duration: var(--marquee-duration, 8s);
+}
+
+@keyframes marquee-loop {
+  0% { transform: translateX(0); }
+  12% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.artist {
+  margin-top: 3px;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 11px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dock {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  border-radius: 999px;
+  background: rgba(20, 20, 20, 0.5);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  -webkit-app-region: no-drag;
+}
+
+.widget:hover .dock {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ctrl {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease;
+}
+
+.ctrl svg {
+  width: 15px;
+  height: 15px;
+  fill: rgba(255, 255, 255, 0.92);
+}
+
+.ctrl:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.ctrl.big {
+  width: 34px;
+  height: 34px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.ctrl.big svg {
+  width: 17px;
+  height: 17px;
+}
+
+.ctrl.big:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.status {
+  margin-top: 8px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.38);
+  -webkit-app-region: drag;
+}
+
+.widget.playing .disc {
+  animation-play-state: running;
+}
+
+.widget.idle .label {
+  background: linear-gradient(135deg, #3a3a3a, #161616);
+}
+
+.widget.idle .label img {
+  opacity: 0;
+}
+
+.close-btn {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(20, 20, 20, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  z-index: 10;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.18s ease, transform 0.18s ease, background 0.15s ease;
+  -webkit-app-region: no-drag;
+}
+
+.widget:hover .close-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.close-btn svg {
+  width: 11px;
+  height: 11px;
+  fill: rgba(255, 255, 255, 0.85);
+}
+
+.close-btn:hover {
+  background: rgba(220, 60, 60, 0.85);
+}

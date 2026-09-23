@@ -1,0 +1,24 @@
+{
+  "name": "vinylnyl-widget",
+  "version": "1.0.0",
+  "description": "YouTube Music now-playing 레코드판 위젯 (Safari/Chrome, Electron 단독)",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --mac dir"
+  },
+  "build": {
+    "appId": "com.vinylnyl.widget",
+    "productName": "Vinylnyl",
+    "asar": false,
+    "mac": {
+      "category": "public.app-category.music",
+      "target": ["dir"]
+    }
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  }
+}

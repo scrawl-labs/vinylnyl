@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>Vinylnyl</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="widget" id="widget">
+
+    <button class="close-btn" id="btn-close" aria-label="닫기">
+      <svg viewBox="0 0 24 24"><path d="M18.3 5.71 12 12.01 5.7 5.71 4.29 7.12l6.3 6.3-6.3 6.29 1.41 1.41 6.3-6.29 6.3 6.29 1.41-1.41-6.3-6.29 6.3-6.3z"/></svg>
+    </button>
+
+    <div class="stage">
+      <div class="disc-shadow"></div>
+
+      <div class="disc-wrap">
+        <div class="disc" id="disc">
+          <div class="grooves"></div>
+          <div class="sheen"></div>
+          <div class="label" id="label">
+            <img id="cover" alt="" />
+            <div class="spindle"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="meta">
+      <div class="marquee" id="marquee">
+        <div class="marquee-track" id="marqueeTrack">
+          <span class="marquee-item" id="title">Vinylnyl</span>
+          <span class="marquee-gap" id="marqueeGap"></span>
+          <span class="marquee-item" id="titleDup" aria-hidden="true"></span>
+        </div>
+      </div>
+      <div class="artist" id="artist">YouTube Music 위젯</div>
+    </div>
+
+    <div class="dock" id="dock">
+      <button class="ctrl" id="btn-prev" aria-label="이전 곡">
+        <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12l9-6v12z"/></svg>
+      </button>
+      <button class="ctrl big" id="btn-play" aria-label="재생/일시정지">
+        <svg id="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="icon-pause" viewBox="0 0 24 24" style="display:none"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+      </button>
+      <button class="ctrl" id="btn-next" aria-label="다음 곡">
+        <svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM4.5 6l9 6-9 6z"/></svg>
+      </button>
+    </div>
+
+    <div class="status" id="status">연결 대기 중…</div>
+  </div>
+
+<script src="renderer.js"></script>
+</body>
+</html>

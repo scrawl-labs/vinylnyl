@@ -1,0 +1,12 @@
+# OS
+.DS_Store
+
+# Node / Electron
+electron-widget/node_modules/
+electron-widget/dist/
+
+# Local tooling / scratch (not part of the shipped project)
+electron-widget/.claude/
+electron-widget/data/
+electron-widget/install.log
+Claude outputs/
