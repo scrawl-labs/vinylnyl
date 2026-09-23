@@ -29,13 +29,6 @@
     cover.removeAttribute('src');
   });
 
-  // Long-form videos (full concerts, mixes, live streams) don't have a
-  // per-song thumbnail -- the video's own thumbnail is just one fixed
-  // frame that has nothing to do with whichever song is playing right
-  // now. Past this length, skip the thumbnail instead of showing a
-  // mismatched image.
-  const LONG_FORM_THRESHOLD_SEC = 20 * 60;
-
   function setIdle() {
     widget.classList.remove('playing');
     widget.classList.add('idle');
@@ -86,15 +79,12 @@
       fitMarquee();
     }
 
-    const isLongForm = !!(data.duration && data.duration > LONG_FORM_THRESHOLD_SEC);
-    if (isLongForm) {
-      if (lastThumb !== '') {
-        lastThumb = '';
-        cover.removeAttribute('src');
-      }
-    } else if (data.thumbnail && data.thumbnail !== lastThumb) {
+    if (data.thumbnail && data.thumbnail !== lastThumb) {
       lastThumb = data.thumbnail;
       cover.src = data.thumbnail;
+    } else if (!data.thumbnail && lastThumb !== '') {
+      lastThumb = '';
+      cover.removeAttribute('src');
     }
 
     if (data.isPlaying) {
