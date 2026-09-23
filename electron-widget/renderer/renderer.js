@@ -19,13 +19,22 @@
   let lastThumb = '';
   let lastTitleKey = null;
 
+  // The <img> stays invisible (opacity: 0, see style.css) until it has
+  // actually finished loading, so a slow or failed request never shows the
+  // browser's native "broken image" icon peeking through the round label.
+  cover.addEventListener('load', () => {
+    cover.classList.add('loaded');
+  });
+
   // If a thumbnail URL 404s or fails to load for any reason, fall back to
   // the empty record label instead of leaving a broken-image icon on it.
+  // Important: keep `lastThumb` pointed at the failed URL (don't reset it
+  // to '') so the next 1s poll tick -- which will report the same
+  // thumbnail URL for the same song -- doesn't immediately retry and fail
+  // again in a tight flicker loop.
   cover.addEventListener('error', () => {
-    if (cover.getAttribute('src')) {
-      lastThumb = '';
-      cover.removeAttribute('src');
-    }
+    cover.classList.remove('loaded');
+    cover.removeAttribute('src');
   });
 
   // Long-form videos (full concerts, mixes, live streams) don't have a
@@ -89,10 +98,12 @@
     if (isLongForm) {
       if (lastThumb !== '') {
         lastThumb = '';
+        cover.classList.remove('loaded');
         cover.removeAttribute('src');
       }
     } else if (data.thumbnail && data.thumbnail !== lastThumb) {
       lastThumb = data.thumbnail;
+      cover.classList.remove('loaded');
       cover.src = data.thumbnail;
     }
 
@@ -115,6 +126,7 @@
     connected = !!status.connected;
     if (!connected) {
       lastThumb = '';
+      cover.classList.remove('loaded');
       cover.removeAttribute('src');
       setIdle();
     }
