@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, Tray, nativeImage, screen, Menu } = require
 const path = require('path');
 const fs = require('fs');
 const { execFile } = require('child_process');
+const { createBridge } = require('./bridge');
 
 const POS_FILE = path.join(app.getPath('userData'), 'widget-pos.json');
 const MAC_DIR = path.join(__dirname, 'mac');
@@ -111,8 +112,14 @@ function createWindow() {
 }
 
 function createTray() {
-  const icon = nativeImage.createFromPath(path.join(__dirname, 'tray', 'iconTemplate.png'));
-  icon.setTemplateImage(true);
+  let icon;
+  if (process.platform === 'darwin') {
+    icon = nativeImage.createFromPath(path.join(__dirname, 'tray', 'iconTemplate.png'));
+    icon.setTemplateImage(true);
+  } else {
+    // Template (monochrome) icons are a macOS thing; use the full-colour app icon elsewhere.
+    icon = nativeImage.createFromPath(path.join(__dirname, 'build', 'icon.png')).resize({ width: 32, height: 32 });
+  }
   tray = new Tray(icon);
   tray.setToolTip('Vinylnyl — YouTube Music 위젯');
   const menu = Menu.buildFromTemplate([
@@ -162,10 +169,31 @@ function startWatchdog() {
   }, 1500);
 }
 
-// --- macOS Safari / Chrome support via AppleScript ("Allow JavaScript from Apple Events") ---
+// --- Browser extension (all OSes / browsers) ---
+// The extension pushes now-playing state over a local WebSocket. While it is
+// active, the macOS AppleScript path below only needs to cover Safari.
+const EXTENSION_FRESH_MS = 3500;
+let lastExtensionAt = 0;
+let bridge = null;
+
+function extensionActive() {
+  return Date.now() - lastExtensionAt < EXTENSION_FRESH_MS;
+}
+
+function onExtensionState(data) {
+  lastExtensionAt = Date.now();
+  markConnected(data);
+}
+
+// --- macOS fallback via AppleScript ("Allow JavaScript from Apple Events") ---
+// Works without the extension, and is the only way to reach Safari.
+function appleScriptBrowsers() {
+  if (process.platform !== 'darwin') return [];
+  return extensionActive() ? BROWSERS.filter((b) => b.name === 'safari') : BROWSERS;
+}
+
 function pollBrowsers() {
-  if (process.platform !== 'darwin') return;
-  for (const b of BROWSERS) {
+  for (const b of appleScriptBrowsers()) {
     execFile('osascript', [b.read], { timeout: 4000 }, (err, stdout) => {
       if (err) return;
       const out = (stdout || '').trim();
@@ -178,16 +206,13 @@ function pollBrowsers() {
 }
 
 function startPolling() {
-  if (process.platform !== 'darwin') {
-    console.warn('이 위젯의 Safari/Chrome 연동은 현재 macOS에서만 동작합니다.');
-    return;
-  }
+  if (process.platform !== 'darwin') return;
   pollTimer = setInterval(pollBrowsers, 1000);
 }
 
 function sendControlToBrowsers(action) {
-  if (process.platform !== 'darwin') return;
-  for (const b of BROWSERS) {
+  if (bridge) bridge.sendControl(action);
+  for (const b of appleScriptBrowsers()) {
     execFile('osascript', [b.control, action], { timeout: 4000 }, () => {});
   }
 }
@@ -205,12 +230,17 @@ ipcMain.on('quit-app', () => {
   app.quit();
 });
 
-app.whenReady().then(() => {
-  createWindow();
-  createTray();
-  startPolling();
-  startWatchdog();
-});
+if (!app.requestSingleInstanceLock()) {
+  app.quit();
+} else {
+  app.whenReady().then(() => {
+    createWindow();
+    createTray();
+    bridge = createBridge({ onState: onExtensionState });
+    startPolling();
+    startWatchdog();
+  });
+}
 
 app.on('window-all-closed', () => {
   // Keep the app (and tray) alive even if the widget window is closed.
@@ -219,4 +249,5 @@ app.on('window-all-closed', () => {
 app.on('before-quit', () => {
   if (pollTimer) clearInterval(pollTimer);
   if (watchdogTimer) clearInterval(watchdogTimer);
+  if (bridge) bridge.close();
 });

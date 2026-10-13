@@ -1,104 +1,99 @@
 # Vinylnyl — YouTube Music 레코드판 위젯
 
-크롬이나 사파리에서 재생 중인 YouTube Music 곡을 데스크톱 어디에나 떠 있는
-레코드판 모양 위젯으로 보여주는 앱입니다. **브라우저 확장 프로그램 없이**,
-Electron 앱 하나가 macOS의 AppleScript(Apple Events)로 Safari/Chrome에게
-"지금 재생 중인 정보 좀 줘"라고 직접 물어보는 방식으로 동작합니다.
+브라우저에서 재생 중인 YouTube Music 곡을 데스크톱 어디에나 떠 있는 레코드판 모양
+위젯으로 보여주는 앱입니다. **macOS / Windows / Linux** 에서 동작해요.
+
+동작 방식: 브라우저 확장 프로그램이 music.youtube.com 탭의 재생 정보를 읽어서
+내 컴퓨터의 `127.0.0.1:17420`(로컬 WebSocket)으로 보내면, Electron 위젯이 그걸 받아 보여줘요.
+위젯의 이전/재생·일시정지/다음 버튼은 같은 길로 반대 방향 명령을 보냅니다.
+외부로 아무것도 전송되지 않고, 전부 내 컴퓨터 안에서만 동작합니다.
 
 폴더 구성:
 
-- `electron-widget/main.js` — 위젯 창을 띄우고, 1초마다 Safari/Chrome에 재생 정보를 물어봄
-- `electron-widget/renderer/` — 레코드판 위젯 UI (HTML/CSS/JS)
-- `electron-widget/mac/*.applescript` — Safari/Chrome에서 재생 정보를 읽고 재생을 제어하는 스크립트
+- `electron-widget/` — 위젯 앱 (Electron)
+  - `main.js` — 위젯 창, 트레이, 확장/AppleScript 연동
+  - `bridge.js` — 확장과 통신하는 로컬 WebSocket 서버 (확장 origin만 허용)
+  - `renderer/` — 레코드판 위젯 UI
+  - `mac/*.applescript` — macOS 전용 대체 경로 (확장 없이 Safari/Chrome 읽기)
+- `extension/` — 브라우저 확장 (Manifest V3, Chrome/Edge/Brave/Opera/Vivaldi/Firefox)
+- `landing-page/` — 소개 페이지
 
-외부로 아무것도 전송되지 않고, 전부 내 컴퓨터 안에서만 동작합니다. macOS 전용입니다.
+## 1. 위젯 앱 설치
 
-## 1. 위젯 앱 실행하기
+[Releases](https://github.com/scrawl-labs/vinylnyl/releases)에서 받으세요.
 
-사용자님의 터미널에서 실행해주세요.
+| OS | 파일 |
+|---|---|
+| macOS 12+ (Apple Silicon / Intel) | `Vinylnyl.dmg` |
+| Windows 10+ | `Vinylnyl-Setup.exe` |
+| Linux | `Vinylnyl.AppImage` (`chmod +x` 후 실행) |
 
-```bash
-cd ~/Desktop/yongtaek/vinylnyl/electron-widget
-npm install
-npm start
-```
+아직 코드 서명이 안 된 앱이라 처음 실행할 때 OS가 경고를 띄워요.
 
-실행되면 화면 오른쪽 위쯤에 레코드판 위젯이 뜹니다.
+- **macOS:** 앱을 한 번 실행해 막힌 뒤 시스템 설정 → 개인정보 보호 및 보안 →
+  **"그래도 열기"**. 또는 터미널에서 `xattr -cr /Applications/Vinylnyl.app`
+- **Windows:** SmartScreen 창에서 **추가 정보 → 실행**
 
-- 드래그해서 원하는 위치로 옮길 수 있고, 다음에 켜도 그 위치를 기억해요.
-- 메뉴 막대에 💿 아이콘이 생겨요 — 위젯 숨기기/보이기, 위치 초기화, 종료.
-- 위젯에 마우스를 올리면 이전/재생·일시정지/다음 버튼이 나타나요.
+## 2. 브라우저 확장 설치 (한 번만)
 
-## 2. 브라우저 설정 (딱 한 번만 하면 됨)
+릴리즈의 `vinylnyl-extension.zip`을 받아 압축을 풀거나, 이 저장소의 `extension/` 폴더를 쓰세요.
 
-브라우저마다 "AppleScript로 페이지 안 자바스크립트를 실행하는 것"을 허용하는 설정을
-켜줘야 해요. 확장 프로그램 설치가 아니라 브라우저 자체의 설정 한 개입니다.
+- **Chrome / Edge / Brave / Opera / Vivaldi:** `chrome://extensions`(또는 `edge://extensions` 등)
+  → **개발자 모드** 켜기 → **압축해제된 확장 프로그램을 로드합니다** → `extension` 폴더 선택
+- **Firefox:** `about:debugging#/runtime/this-firefox` → **임시 부가 기능 로드** → `manifest.json` 선택
+  (Firefox는 서명되지 않은 부가 기능을 임시로만 설치할 수 있어서, 브라우저를 껐다 켜면 다시 로드해야 해요)
 
-**Chrome**
+설치 후 music.youtube.com에서 곡을 재생하면 위젯이 반응해요. 확장은 위젯 앱이 켜져 있을 때만
+연결하고, 꺼져 있으면 3초마다 조용히 다시 시도합니다.
 
-메뉴 막대 → **보기(View)** → **개발자(Developer)** → **"Apple 이벤트로부터 JavaScript 허용"** 체크
+## 3. (macOS 전용) 확장 없이 쓰기
 
-**Safari**
+macOS에서는 확장 없이도 AppleScript로 Safari/Chrome 계열 브라우저를 읽을 수 있어요.
+**Safari는 확장 대신 이 방법만 지원합니다.**
 
-1. Safari → 설정 → 고급 탭 → "메뉴 막대에서 개발자용 메뉴 보기" 체크
-2. 메뉴 막대의 **개발자용(Develop)** 메뉴 → **"Apple 이벤트로부터 JavaScript 허용"** 체크
+**Chrome 계열:** 메뉴 막대 → 보기 → 개발자 → **"Apple 이벤트로부터 JavaScript 허용"**
 
-둘 다 켜두면 두 브라우저 아무 데서나 재생해도 위젯이 반응해요 (동시에 켜놔도 안 부딪힘).
+**Safari:** 설정 → 고급 → "메뉴 막대에서 개발자용 메뉴 보기" 체크 →
+개발자용 메뉴 → **"Apple 이벤트로부터 JavaScript 허용"**
 
-## 3. 권한 허용
-
-설정을 켠 뒤 music.youtube.com에서 곡을 재생하면, macOS가 다음과 같은 자동화 권한
-팝업을 띄울 수 있어요.
-
-> "Electron"이(가) "Google Chrome"을(를) 제어하려고 합니다
-> "Electron"이(가) "Safari"를(을) 제어하려고 합니다
-
-**허용**을 눌러주세요. 혹시 못 보고 지나쳤다면 시스템 설정 > 개인정보 보호 및 보안 >
-자동화(Automation)에서 Electron이 Chrome/Safari를 제어할 수 있게 직접 켜줄 수 있어요.
+설정을 켠 뒤 곡을 재생하면 macOS가 "Vinylnyl이(가) Safari를 제어하려고 합니다" 같은
+자동화 권한 팝업을 띄워요. **허용**을 눌러주세요. 놓쳤다면 시스템 설정 → 개인정보 보호 및
+보안 → 자동화에서 직접 켤 수 있어요. 확장도 같이 켜져 있으면 Safari만 AppleScript로 읽고
+나머지 브라우저는 확장 쪽 데이터를 씁니다.
 
 ## 문제 해결
 
-- 위젯이 계속 반응 안 하면: 2번 설정(브라우저별 "Apple 이벤트로부터 JavaScript 허용")과
-  3번 권한(자동화 허용)을 다시 확인해주세요. 둘 중 하나라도 꺼져 있으면 조용히 실패해요.
-- 그래도 안 되면: 터미널에서 아래처럼 직접 실행해서 어떤 값이 나오는지 확인할 수 있어요
-  (`null`이 나오면 재생 중인 music.youtube.com 탭을 못 찾은 것, 에러가 나오면 권한/설정
-  문제예요).
+- 위젯이 "연결 대기 중"에서 안 넘어가면: 위젯 앱이 켜져 있는지, 확장이 켜져 있는지
+  (`chrome://extensions`), music.youtube.com 탭이 열려 있는지 확인하세요. 확장을 방금 설치했다면
+  YouTube Music 탭을 새로고침해야 해요.
+- 포트 17420을 다른 프로그램이 쓰고 있으면 연결되지 않아요. 앱 콘솔에 경고가 찍힙니다.
+- 곡 제목/썸네일이 안 뜨면: YouTube Music이 UI를 바꿨을 수 있어요.
+  `extension/content.js`와 `electron-widget/mac/read-*.applescript`의
+  `.title.style-scope.ytmusic-player-bar` 같은 선택자를 실제 페이지에 맞게 고쳐주세요.
+- macOS에서 AppleScript 경로를 직접 확인하려면:
+  `osascript electron-widget/mac/read-chrome.applescript` (`null`이면 재생 중인 탭을 못 찾은 것)
 
-  ```bash
-  osascript ~/Desktop/yongtaek/vinylnyl/electron-widget/mac/read-chrome.applescript
-  osascript ~/Desktop/yongtaek/vinylnyl/electron-widget/mac/read-safari.applescript
-  ```
-
-- 곡 제목/썸네일이 안 뜨면: YouTube Music이 UI를 업데이트해서 페이지 구조가 바뀌었을
-  수 있어요. `mac/read-chrome.applescript`와 `mac/read-safari.applescript` 안의
-  `.title.style-scope.ytmusic-player-bar` 같은 선택자를 실제 페이지에 맞게 고쳐주면 됩니다.
-
-## 더블클릭용 .app으로 패키징하기
+## 개발 / 빌드
 
 ```bash
-cd ~/Desktop/yongtaek/vinylnyl/electron-widget
+cd electron-widget
 npm install
-npm run dist
+npm start                 # 개발 실행
+npm run dist:mac          # dist/Vinylnyl.dmg      (맥에서)
+npm run dist:win          # dist/Vinylnyl-Setup.exe (Windows에서, 개발자 모드 필요)
+npm run dist:linux        # dist/Vinylnyl.AppImage  (Linux에서)
 ```
 
-끝나면 `electron-widget/dist/Vinylnyl.dmg` (Apple Silicon/Intel 유니버설)가 생겨요.
-DMG를 열어서 앱을 `응용 프로그램(Applications)` 폴더로 옮겨주세요. DMG 없이 `.app`만
-필요하면 `npm run dist:app`을 쓰면 됩니다.
+> Windows에서 `dist:win`이 심볼릭 링크 오류로 실패하면 설정 → 개발자용 → **개발자 모드**를 켜세요.
 
-릴리즈 올리기 (맥에서, `gh` 설치 및 `gh auth login` 필요):
+### 릴리즈
+
+`v*` 태그를 푸시하면 GitHub Actions(`.github/workflows/release.yml`)가 세 OS에서 앱을 빌드하고
+확장 zip과 함께 릴리즈에 올려요. 릴리즈 노트는 `RELEASE_NOTES.md`를 씁니다.
 
 ```bash
-gh release create v1.0.0 dist/Vinylnyl.dmg --title "Vinylnyl 1.0.0" --notes-file ../RELEASE_NOTES.md
+git tag v1.0.0 && git push origin main v1.0.0
 ```
 
-**처음 실행할 때:** 서명이 안 된 앱이라 더블클릭하면 "확인되지 않은 개발자" 경고가 떠요.
-앱을 한 번 실행해 막힌 뒤 **시스템 설정 → 개인정보 보호 및 보안**에서 아래쪽의
-**"그래도 열기"** 를 눌러주세요 (macOS 14 이하는 아이콘 우클릭 → 열기도 가능).
-터미널에서 `xattr -cr /Applications/Vinylnyl.app` 한 줄로도 해결돼요.
-
-패키징한 뒤로는 macOS 자동화 권한 팝업에도 "Electron" 대신 "Vinylnyl"이라는 이름으로 떠요.
-(이전에 Electron에게 줬던 자동화 권한과는 별개라, Chrome/Safari 제어 권한을 다시 한번
-허용해줘야 할 수 있어요.)
-
-**로그인할 때 자동으로 켜지게 하려면:** 시스템 설정 → 일반 → 로그인 항목 → Vinylnyl 추가.
-그럼 컴퓨터 켤 때마다 위젯이 알아서 떠요.
+**로그인할 때 자동으로 켜지게 하려면:** macOS는 시스템 설정 → 일반 → 로그인 항목,
+Windows는 `shell:startup` 폴더에 바로가기를 추가하세요.

@@ -1,21 +1,33 @@
 ## Vinylnyl 1.0.0
 
-First release. A floating, always-on-top spinning vinyl widget for YouTube Music.
+First release. A floating, always-on-top spinning vinyl widget for YouTube Music — on **macOS, Windows and Linux**.
 
-**macOS only** (macOS 12+, Apple Silicon & Intel). Windows and Linux are not supported yet.
+### Downloads
+| | |
+|---|---|
+| macOS 12+ (Apple Silicon & Intel) | `Vinylnyl.dmg` |
+| Windows 10+ | `Vinylnyl-Setup.exe` |
+| Linux | `Vinylnyl.AppImage` |
+| Browser extension (all OSes) | `vinylnyl-extension.zip` |
 
 ### Features
-- Detects YouTube Music playing in Safari, Chrome, Edge, Brave, Vivaldi and Opera
 - Real spinning record with album art, title and artist
 - Previous / play-pause / next controls
-- Menu bar tray: show/hide, reset position, quit
-- 100% local — no account, no cloud, no browser extension
+- Tray / menu bar: show/hide, reset position, quit
+- Works with Chrome, Edge, Brave, Opera, Vivaldi and Firefox via a small extension
+- Safari on macOS works without the extension (Apple Events)
+- 100% local — no account, no cloud. The extension only talks to the app on `127.0.0.1`
 
 ### Install
-1. Download `Vinylnyl.dmg`, open it and drag Vinylnyl to Applications.
-2. The app is not notarized yet, so macOS will block the first launch. Open the app once, then go to
-   **System Settings → Privacy & Security → "Open Anyway"**.
-   (Or run `xattr -cr /Applications/Vinylnyl.app` in Terminal.)
-3. In your browser, enable **"Allow JavaScript from Apple Events"**
-   (Chrome: View → Developer, Safari: Develop menu, after enabling it in Settings → Advanced).
-4. Allow the Automation prompt when macOS asks Vinylnyl to control your browser.
+1. Install the app for your OS.
+2. Unzip `vinylnyl-extension.zip`, open your browser's extensions page, enable **Developer mode** and **Load unpacked**
+   (Firefox: `about:debugging` → Load Temporary Add-on → `manifest.json`).
+3. Play something on music.youtube.com.
+
+The app is not code-signed yet, so the first launch is blocked by the OS:
+- **macOS:** open the app once, then System Settings → Privacy & Security → **Open Anyway** (or `xattr -cr /Applications/Vinylnyl.app`).
+- **Windows:** SmartScreen → **More info → Run anyway**.
+
+### Known limitations
+- The extension is installed manually for now (not on the Chrome Web Store / Firefox Add-ons yet). Firefox only keeps temporary add-ons until restart.
+- Linux: the widget needs a compositing window manager for transparency.

@@ -1,12 +1,15 @@
 {
   "name": "vinylnyl-widget",
   "version": "1.0.0",
-  "description": "YouTube Music now-playing 레코드판 위젯 (Safari/Chrome, Electron 단독)",
+  "description": "YouTube Music now-playing 레코드판 위젯 (macOS / Windows / Linux, 브라우저 확장 연동)",
   "main": "main.js",
   "private": true,
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder --mac dmg --universal",
+    "dist:mac": "electron-builder --mac dmg --universal",
+    "dist:win": "electron-builder --win nsis",
+    "dist:linux": "electron-builder --linux AppImage",
     "dist:app": "electron-builder --mac dir"
   },
   "build": {
@@ -15,14 +18,37 @@
     "asar": false,
     "mac": {
       "category": "public.app-category.music",
-      "target": ["dmg"]
+      "target": [
+        "dmg"
+      ]
     },
     "dmg": {
       "artifactName": "Vinylnyl.dmg"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "artifactName": "Vinylnyl-Setup.exe",
+      "oneClick": true
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "AudioVideo",
+      "icon": "build/icon.png",
+      "artifactName": "Vinylnyl.AppImage"
     }
   },
   "devDependencies": {
     "electron": "^33.2.0",
     "electron-builder": "^25.1.8"
+  },
+  "dependencies": {
+    "ws": "^8.22.0"
   }
 }
