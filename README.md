@@ -81,13 +81,20 @@ npm install
 npm run dist
 ```
 
-끝나면 `electron-widget/dist/mac/Vinylnyl.app` (Apple Silicon이면
-`dist/mac-arm64/Vinylnyl.app`)가 생겨요. Finder에서 그 앱을 `응용 프로그램(Applications)`
-폴더로 옮겨주세요.
+끝나면 `electron-widget/dist/Vinylnyl.dmg` (Apple Silicon/Intel 유니버설)가 생겨요.
+DMG를 열어서 앱을 `응용 프로그램(Applications)` 폴더로 옮겨주세요. DMG 없이 `.app`만
+필요하면 `npm run dist:app`을 쓰면 됩니다.
+
+릴리즈 올리기 (맥에서, `gh` 설치 및 `gh auth login` 필요):
+
+```bash
+gh release create v1.0.0 dist/Vinylnyl.dmg --title "Vinylnyl 1.0.0" --notes-file ../RELEASE_NOTES.md
+```
 
 **처음 실행할 때:** 서명이 안 된 앱이라 더블클릭하면 "확인되지 않은 개발자" 경고가 떠요.
-아이콘을 **control-클릭(또는 우클릭) → 열기**를 눌러서 한 번만 허용해주면 그다음부터는
-평소처럼 더블클릭으로 열려요.
+앱을 한 번 실행해 막힌 뒤 **시스템 설정 → 개인정보 보호 및 보안**에서 아래쪽의
+**"그래도 열기"** 를 눌러주세요 (macOS 14 이하는 아이콘 우클릭 → 열기도 가능).
+터미널에서 `xattr -cr /Applications/Vinylnyl.app` 한 줄로도 해결돼요.
 
 패키징한 뒤로는 macOS 자동화 권한 팝업에도 "Electron" 대신 "Vinylnyl"이라는 이름으로 떠요.
 (이전에 Electron에게 줬던 자동화 권한과는 별개라, Chrome/Safari 제어 권한을 다시 한번

@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --mac dir"
+    "dist": "electron-builder --mac dmg --universal",
+    "dist:app": "electron-builder --mac dir"
   },
   "build": {
     "appId": "com.vinylnyl.widget",
@@ -14,7 +15,10 @@
     "asar": false,
     "mac": {
       "category": "public.app-category.music",
-      "target": ["dir"]
+      "target": ["dmg"]
+    },
+    "dmg": {
+      "artifactName": "Vinylnyl.dmg"
     }
   },
   "devDependencies": {
