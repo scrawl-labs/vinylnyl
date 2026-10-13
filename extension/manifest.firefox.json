@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Vinylnyl",
+  "version": "1.0.0",
+  "description": "Sends what's playing on YouTube Music to the Vinylnyl desktop widget. Everything stays on your computer.",
+  "icons": {
+    "128": "icons/icon.png"
+  },
+  "host_permissions": [
+    "ws://127.0.0.1/*"
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://music.youtube.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "vinylnyl@scrawl-labs",
+      "strict_min_version": "121.0"
+    }
+  }
+}

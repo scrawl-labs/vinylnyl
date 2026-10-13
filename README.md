@@ -40,7 +40,8 @@
 
 - **Chrome / Edge / Brave / Opera / Vivaldi:** `chrome://extensions`(또는 `edge://extensions` 등)
   → **개발자 모드** 켜기 → **압축해제된 확장 프로그램을 로드합니다** → `extension` 폴더 선택
-- **Firefox:** `about:debugging#/runtime/this-firefox` → **임시 부가 기능 로드** → `manifest.json` 선택
+- **Firefox:** 릴리즈의 `vinylnyl-extension-firefox.zip`을 풀고(저장소에서 직접 쓸 땐 `extension/manifest.firefox.json`을
+  `manifest.json`으로 바꿔 복사) `about:debugging#/runtime/this-firefox` → **임시 부가 기능 로드** → `manifest.json` 선택
   (Firefox는 서명되지 않은 부가 기능을 임시로만 설치할 수 있어서, 브라우저를 껐다 켜면 다시 로드해야 해요)
 
 설치 후 music.youtube.com에서 곡을 재생하면 위젯이 반응해요. 확장은 위젯 앱이 켜져 있을 때만
@@ -66,6 +67,8 @@ macOS에서는 확장 없이도 AppleScript로 Safari/Chrome 계열 브라우저
 - 위젯이 "연결 대기 중"에서 안 넘어가면: 위젯 앱이 켜져 있는지, 확장이 켜져 있는지
   (`chrome://extensions`), music.youtube.com 탭이 열려 있는지 확인하세요. 확장을 방금 설치했다면
   YouTube Music 탭을 새로고침해야 해요.
+- `chrome://extensions`의 오류에 `ERR_CONNECTION_REFUSED`가 뜨는 건 위젯 앱이 꺼져 있다는 뜻이에요.
+  앱을 켜면 몇 초 안에 자동으로 연결돼요.
 - 포트 17420을 다른 프로그램이 쓰고 있으면 연결되지 않아요. 앱 콘솔에 경고가 찍힙니다.
 - 곡 제목/썸네일이 안 뜨면: YouTube Music이 UI를 바꿨을 수 있어요.
   `extension/content.js`와 `electron-widget/mac/read-*.applescript`의

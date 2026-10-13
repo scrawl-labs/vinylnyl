@@ -8,7 +8,8 @@ First release. A floating, always-on-top spinning vinyl widget for YouTube Music
 | macOS 12+ (Apple Silicon & Intel) | `Vinylnyl.dmg` |
 | Windows 10+ | `Vinylnyl-Setup.exe` |
 | Linux | `Vinylnyl.AppImage` |
-| Browser extension (all OSes) | `vinylnyl-extension.zip` |
+| Browser extension (Chrome, Edge, Brave, Opera, Vivaldi) | `vinylnyl-extension.zip` |
+| Browser extension (Firefox) | `vinylnyl-extension-firefox.zip` |
 
 ### Features
 - Real spinning record with album art, title and artist
@@ -21,7 +22,7 @@ First release. A floating, always-on-top spinning vinyl widget for YouTube Music
 ### Install
 1. Install the app for your OS.
 2. Unzip `vinylnyl-extension.zip`, open your browser's extensions page, enable **Developer mode** and **Load unpacked**
-   (Firefox: `about:debugging` → Load Temporary Add-on → `manifest.json`).
+   (Firefox: use the Firefox zip, then `about:debugging` → Load Temporary Add-on → `manifest.json`).
 3. Play something on music.youtube.com.
 
 The app is not code-signed yet, so the first launch is blocked by the OS:

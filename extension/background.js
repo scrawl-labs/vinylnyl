@@ -1,19 +1,27 @@
 const api = globalThis.browser || chrome;
 const WS_URL = 'ws://127.0.0.1:17420';
-const RETRY_MS = 3000;
+const RETRY_MIN_MS = 2000;
+const RETRY_MAX_MS = 15000;
 
 let ws = null;
 let retryTimer = null;
+let retryMs = RETRY_MIN_MS;
+let lastAttempt = 0;
 // tabId -> { data, at }. A tab is dropped when it closes or stops reporting.
 const tabs = new Map();
 
-function connect() {
+function connect(force) {
   if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
+  // Tab messages arrive every second; don't turn each one into a connection attempt
+  // while the widget app isn't running.
+  if (!force && Date.now() - lastAttempt < retryMs) return;
+  lastAttempt = Date.now();
   try {
     ws = new WebSocket(WS_URL);
   } catch (e) {
     return scheduleRetry();
   }
+  ws.onopen = () => { retryMs = RETRY_MIN_MS; };
   ws.onmessage = (ev) => {
     let msg;
     try { msg = JSON.parse(ev.data); } catch (e) { return; }
@@ -25,7 +33,8 @@ function connect() {
 
 function scheduleRetry() {
   clearTimeout(retryTimer);
-  retryTimer = setTimeout(connect, RETRY_MS);
+  retryTimer = setTimeout(() => connect(true), retryMs);
+  retryMs = Math.min(retryMs * 2, RETRY_MAX_MS);
 }
 
 // Prefer the tab that is actually playing, otherwise the most recently active one.

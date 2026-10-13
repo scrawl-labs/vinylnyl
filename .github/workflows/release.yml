@@ -47,9 +47,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: cd extension && zip -r ../vinylnyl-extension.zip . -x '.*'
+      - name: Package extensions
+        run: |
+          mkdir -p out/chrome out/firefox
+          cp -r extension/. out/chrome/ && rm out/chrome/manifest.firefox.json
+          cp -r extension/. out/firefox/ && mv out/firefox/manifest.firefox.json out/firefox/manifest.json
+          (cd out/chrome && zip -r ../../vinylnyl-extension.zip .)
+          (cd out/firefox && zip -r ../../vinylnyl-extension-firefox.zip .)
       - uses: softprops/action-gh-release@v2
         with:
-          files: vinylnyl-extension.zip
+          files: |
+            vinylnyl-extension.zip
+            vinylnyl-extension-firefox.zip
           body_path: RELEASE_NOTES.md
           name: Vinylnyl ${{ github.ref_name }}
