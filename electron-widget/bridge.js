@@ -1,6 +1,6 @@
 const { WebSocketServer } = require('ws');
 
-const PORT = 17420;
+const PORT = Number(process.env.VINYLNYL_PORT) || 17420;
 const HOST = '127.0.0.1';
 
 // Only the Vinylnyl browser extension may talk to the widget. Ordinary web

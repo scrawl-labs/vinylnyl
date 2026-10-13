@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Vinylnyl — One Widget for All Your Sound.</title>
-<meta name="description" content="Safari와 Chrome의 YouTube Music을 실시간으로 감지해, 진짜 돌아가는 레코드판 위젯으로 보여주는 macOS · Windows · Linux 앱. 100% 로컬, 계정 없음, 클라우드 없음." />
+<meta name="description" content="지금 재생 중인 음악을 진짜 돌아가는 레코드판 위젯으로 보여주는 macOS · Windows · Linux 앱. YouTube, YouTube Music, Spotify 등 어떤 플레이어든. 100% 로컬, 계정 없음, 클라우드 없음." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -298,7 +298,7 @@
       <div class="hero-text">
         <div class="eyebrow"><span class="dot"></span> Mac · Windows · Linux · Always On Top</div>
         <h1 class="headline">One widget for<br/>all your sound.</h1>
-        <p class="sub">Vinylnyl watches YouTube Music in your browser and turns it into a real spinning vinyl widget — floating over every app, always in view.</p>
+        <p class="sub">Vinylnyl shows whatever is playing — YouTube, YouTube Music, Spotify and more — as a real spinning vinyl widget — floating over every app, always in view.</p>
         <div class="cta-row">
           <a href="#download" class="btn btn-primary btn-lg">Download</a>
           <a href="#how" class="btn btn-ghost btn-lg">See how it works</a>
@@ -350,7 +350,7 @@
   <section class="section tight section-center" id="browsers">
     <div class="section-tag">Compatibility</div>
     <h2 class="section-title">Works right inside your browser.</h2>
-    <p class="section-desc">Vinylnyl reads what's playing straight from the tab — a tiny browser extension reports the current track to the app on your own computer. Chrome, Edge, Brave, Opera, Vivaldi and Firefox on any OS; Safari on Mac works with no extension at all.</p>
+    <p class="section-desc">Vinylnyl reads the media controls your system already has, so on Windows and Linux it works with any player, no extension needed. On Mac it talks to Safari and Chrome-based browsers directly. An optional browser extension adds Firefox and sharper track info.</p>
 
     <div class="browser-row">
       <div class="browser-card">
@@ -435,7 +435,7 @@
       </div>
       <div class="feature-card">
         <h3>Any Browser, Any OS</h3>
-        <div class="fpad"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3.5 9.5h17M3.5 14.5h17"/></svg></span> Works with whichever browser has YouTube Music open.</div>
+        <div class="fpad"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3.5 9.5h17M3.5 14.5h17"/></svg></span> Works with whatever is playing: YouTube, YouTube Music, Spotify and more.</div>
       </div>
       <div class="feature-card">
         <h3>Always-on-Top Widget</h3>
@@ -507,7 +507,7 @@
           </div>
         </div>
         <div class="live-info">
-          <div class="live-row"><span class="src">YouTube Music · Safari</span><span class="time">00:41</span></div>
+          <div class="live-row"><span class="src">YouTube · Chrome</span><span class="time">00:41</span></div>
           <div class="live-row"><span class="src">Track detected<span class="tag">title + artist</span></span><span class="time">now</span></div>
           <div class="live-row"><span class="src">Thumbnail synced<span class="tag">album art</span></span><span class="time">now</span></div>
           <div class="live-row"><span class="src">Widget position<span class="tag">saved &amp; restored</span></span><span class="time">on launch</span></div>
@@ -530,13 +530,24 @@
         <div class="req">macOS 12+ (Apple Silicon &amp; Intel) · Windows 10+ · Linux (AppImage)</div>
 
         <details class="trust-note" open>
-          <summary>Setup: install the browser extension</summary>
+          <summary>Setup: just open the app</summary>
           <p>
-            Vinylnyl needs its small browser extension to see what's playing. Download
-            <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/vinylnyl-extension.zip" style="color:var(--green);">vinylnyl-extension.zip</a>, unzip it, then open
+            <strong>Windows:</strong> nothing else to install — play something and the widget picks it up.<br/>
+            <strong>macOS:</strong> works with Safari and Chrome-based browsers once you enable
+            <em>"Allow JavaScript from Apple Events"</em> in the browser's Develop menu (see the README).<br/>
+            <strong>Linux:</strong> install <code style="display:inline;padding:2px 6px;">playerctl</code> (e.g. <code style="display:inline;padding:2px 6px;">sudo apt install playerctl</code>).
+          </p>
+        </details>
+
+        <details class="trust-note">
+          <summary>Optional: browser extension (Firefox, sharper info)</summary>
+          <p>
+            The extension also covers Firefox and any case the system media controls miss. Download
+            <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/vinylnyl-extension.zip" style="color:var(--green);">vinylnyl-extension.zip</a>, unzip it, open
             <strong>chrome://extensions</strong> (or edge://, brave://), turn on <strong>Developer mode</strong> and click
-            <strong>Load unpacked</strong>. On Firefox download the <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/vinylnyl-extension-firefox.zip" style="color:var(--green);">Firefox build</a> and use <strong>about:debugging → Load Temporary Add-on</strong>.
-            On a Mac you can skip this and use Safari or Chrome via Apple Events instead (see the README).
+            <strong>Load unpacked</strong>. On Firefox use the
+            <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/vinylnyl-extension-firefox.zip" style="color:var(--green);">Firefox build</a> with
+            <strong>about:debugging → Load Temporary Add-on</strong>.
           </p>
         </details>
 
@@ -566,7 +577,7 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <div class="brand"><span class="brand-disc"></span>Vinylnyl</div>
-        <p>A desktop widget that turns YouTube Music into a spinning vinyl record — on Mac, Windows and Linux.</p>
+        <p>A desktop widget that turns whatever you're listening to into a spinning vinyl record — on Mac, Windows and Linux.</p>
       </div>
       <div class="footer-col">
         <h5>Product</h5>

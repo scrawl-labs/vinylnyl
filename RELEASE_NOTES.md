@@ -1,10 +1,15 @@
-## Vinylnyl 1.0.1
+## Vinylnyl 1.1.0
 
-First release. A floating, always-on-top spinning vinyl widget for YouTube Music — on **macOS, Windows and Linux**.
+Vinylnyl now shows **whatever is playing** — YouTube, YouTube Music, Spotify and more — and on Windows and Linux it
+needs **no browser extension** any more.
 
-### What's new in 1.0.1
-- Fix: the Windows/Linux tray icon was missing in packaged builds
-- Launching the app again now brings the widget back instead of doing nothing
+### What's new
+- **Windows:** reads the system media controls directly. Install the app and it just works.
+- **Linux:** reads MPRIS through `playerctl` (install it with your package manager). *Not tested on a real Linux desktop yet.*
+- **macOS:** unchanged — Safari and Chrome-based browsers via Apple Events.
+- The browser extension is now **optional** (Firefox, sharper track info) and also understands regular YouTube pages.
+- The widget is no longer YouTube-Music-only: new wording, and it shows any player that reports to the OS.
+- Controls (previous / play-pause / next) go to the source that is currently playing, so nothing fires twice.
 
 ### Downloads
 | | |
@@ -12,27 +17,18 @@ First release. A floating, always-on-top spinning vinyl widget for YouTube Music
 | macOS 12+ (Apple Silicon & Intel) | `Vinylnyl.dmg` |
 | Windows 10+ | `Vinylnyl-Setup.exe` |
 | Linux | `Vinylnyl.AppImage` |
-| Browser extension (Chrome, Edge, Brave, Opera, Vivaldi) | `vinylnyl-extension.zip` |
-| Browser extension (Firefox) | `vinylnyl-extension-firefox.zip` |
-
-### Features
-- Real spinning record with album art, title and artist
-- Previous / play-pause / next controls
-- Tray / menu bar: show/hide, reset position, quit
-- Works with Chrome, Edge, Brave, Opera, Vivaldi and Firefox via a small extension
-- Safari on macOS works without the extension (Apple Events)
-- 100% local — no account, no cloud. The extension only talks to the app on `127.0.0.1`
+| Optional extension (Chrome, Edge, Brave, Opera, Vivaldi) | `vinylnyl-extension.zip` |
+| Optional extension (Firefox) | `vinylnyl-extension-firefox.zip` |
 
 ### Install
-1. Install the app for your OS.
-2. Unzip `vinylnyl-extension.zip`, open your browser's extensions page, enable **Developer mode** and **Load unpacked**
-   (Firefox: use the Firefox zip, then `about:debugging` → Load Temporary Add-on → `manifest.json`).
-3. Play something on music.youtube.com.
+1. Install the app for your OS and play something.
+2. macOS: enable **Allow JavaScript from Apple Events** in your browser (Chrome: View → Developer; Safari: Develop menu).
+   Linux: `sudo apt install playerctl` (or your distro's equivalent).
 
 The app is not code-signed yet, so the first launch is blocked by the OS:
 - **macOS:** open the app once, then System Settings → Privacy & Security → **Open Anyway** (or `xattr -cr /Applications/Vinylnyl.app`).
 - **Windows:** SmartScreen → **More info → Run anyway**.
 
 ### Known limitations
-- The extension is installed manually for now (not on the Chrome Web Store / Firefox Add-ons yet). Firefox only keeps temporary add-ons until restart.
-- Linux: the widget needs a compositing window manager for transparency.
+- On Windows/Linux the system does not say *which site* is playing, so any media in any app can show up.
+- The optional extension is installed manually for now (not on the Chrome Web Store / Firefox Add-ons yet).

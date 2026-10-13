@@ -1,21 +1,30 @@
-# Vinylnyl — YouTube Music 레코드판 위젯
+# Vinylnyl — 지금 재생 중인 음악 레코드판 위젯
 
-브라우저에서 재생 중인 YouTube Music 곡을 데스크톱 어디에나 떠 있는 레코드판 모양
-위젯으로 보여주는 앱입니다. **macOS / Windows / Linux** 에서 동작해요.
+지금 재생 중인 음악을 데스크톱 어디에나 떠 있는 레코드판 모양 위젯으로 보여주는 앱입니다.
+**macOS / Windows / Linux** 에서 동작하고, YouTube, YouTube Music, Spotify 등 OS에 미디어 정보를
+알리는 플레이어면 무엇이든 보여줘요. 외부로 아무것도 전송되지 않고 전부 내 컴퓨터 안에서만 동작합니다.
 
-동작 방식: 브라우저 확장 프로그램이 music.youtube.com 탭의 재생 정보를 읽어서
-내 컴퓨터의 `127.0.0.1:17420`(로컬 WebSocket)으로 보내면, Electron 위젯이 그걸 받아 보여줘요.
-위젯의 이전/재생·일시정지/다음 버튼은 같은 길로 반대 방향 명령을 보냅니다.
-외부로 아무것도 전송되지 않고, 전부 내 컴퓨터 안에서만 동작합니다.
+동작 방식 (플랫폼별로 확장 없이 앱만 설치해도 돼요):
+
+| OS | 기본 방식 | 추가 설치 |
+|---|---|---|
+| Windows | 시스템 미디어 컨트롤(SMTC)을 직접 읽음 | 없음 |
+| Linux | MPRIS (`playerctl` 사용) | `playerctl` 설치 |
+| macOS | AppleScript로 Safari / Chrome 계열 브라우저 읽음 | 브라우저에서 "Apple 이벤트로부터 JavaScript 허용" 켜기 |
+
+브라우저 확장은 **선택 사항**이에요. Firefox를 쓰거나, 더 정확한 곡 정보가 필요하거나,
+위 기본 방식이 안 먹는 경우에 보강용으로 쓰세요. 확장과 기본 방식이 같이 켜져 있으면
+재생 중인 쪽 정보를 우선 보여줍니다.
 
 폴더 구성:
 
 - `electron-widget/` — 위젯 앱 (Electron)
-  - `main.js` — 위젯 창, 트레이, 확장/AppleScript 연동
+  - `main.js` — 위젯 창, 트레이, 소스 병합 및 제어 라우팅
+  - `os-media.js`, `win/*.ps1` — Windows / Linux OS 미디어 읽기와 제어
   - `bridge.js` — 확장과 통신하는 로컬 WebSocket 서버 (확장 origin만 허용)
   - `renderer/` — 레코드판 위젯 UI
-  - `mac/*.applescript` — macOS 전용 대체 경로 (확장 없이 Safari/Chrome 읽기)
-- `extension/` — 브라우저 확장 (Manifest V3, Chrome/Edge/Brave/Opera/Vivaldi/Firefox)
+  - `mac/*.applescript` — macOS 브라우저 읽기와 제어
+- `extension/` — 선택 사항인 브라우저 확장 (Manifest V3, YouTube / YouTube Music)
 - `landing-page/` — 소개 페이지
 
 ## 1. 위젯 앱 설치
@@ -34,7 +43,7 @@
   **"그래도 열기"**. 또는 터미널에서 `xattr -cr /Applications/Vinylnyl.app`
 - **Windows:** SmartScreen 창에서 **추가 정보 → 실행**
 
-## 2. 브라우저 확장 설치 (한 번만)
+## 2. (선택) 브라우저 확장 설치
 
 릴리즈의 `vinylnyl-extension.zip`을 받아 압축을 풀거나, 이 저장소의 `extension/` 폴더를 쓰세요.
 
@@ -44,13 +53,12 @@
   `manifest.json`으로 바꿔 복사) `about:debugging#/runtime/this-firefox` → **임시 부가 기능 로드** → `manifest.json` 선택
   (Firefox는 서명되지 않은 부가 기능을 임시로만 설치할 수 있어서, 브라우저를 껐다 켜면 다시 로드해야 해요)
 
-설치 후 music.youtube.com에서 곡을 재생하면 위젯이 반응해요. 확장은 위젯 앱이 켜져 있을 때만
+설치 후 music.youtube.com이나 youtube.com 영상을 재생하면 위젯이 반응해요. 확장은 위젯 앱이 켜져 있을 때만
 연결하고, 꺼져 있으면 3초마다 조용히 다시 시도합니다.
 
-## 3. (macOS 전용) 확장 없이 쓰기
+## 3. macOS 브라우저 설정
 
-macOS에서는 확장 없이도 AppleScript로 Safari/Chrome 계열 브라우저를 읽을 수 있어요.
-**Safari는 확장 대신 이 방법만 지원합니다.**
+macOS에서는 AppleScript로 Safari/Chrome 계열 브라우저를 읽어요. **Safari는 이 방법만 지원합니다.**
 
 **Chrome 계열:** 메뉴 막대 → 보기 → 개발자 → **"Apple 이벤트로부터 JavaScript 허용"**
 
@@ -64,9 +72,10 @@ macOS에서는 확장 없이도 AppleScript로 Safari/Chrome 계열 브라우저
 
 ## 문제 해결
 
-- 위젯이 "연결 대기 중"에서 안 넘어가면: 위젯 앱이 켜져 있는지, 확장이 켜져 있는지
-  (`chrome://extensions`), music.youtube.com 탭이 열려 있는지 확인하세요. 확장을 방금 설치했다면
-  YouTube Music 탭을 새로고침해야 해요.
+- 위젯이 "기다리는 중"에서 안 넘어가면: 실제로 음악이 재생 중인지 확인하세요. Linux는 `playerctl`이
+  설치되어 있어야 하고, macOS는 브라우저의 Apple 이벤트 설정과 자동화 권한이 필요해요.
+  확장을 쓴다면 확장이 켜져 있는지(`chrome://extensions`)와, 방금 설치했다면 탭 새로고침을 확인하세요.
+- Windows에서 안 읽히면 PowerShell 실행이 막혀 있는지 확인하세요 (앱이 `-ExecutionPolicy Bypass`로 실행하지만 그룹 정책이 막을 수 있어요).
 - `chrome://extensions`의 오류에 `ERR_CONNECTION_REFUSED`가 뜨는 건 위젯 앱이 꺼져 있다는 뜻이에요.
   앱을 켜면 몇 초 안에 자동으로 연결돼요.
 - 포트 17420을 다른 프로그램이 쓰고 있으면 연결되지 않아요. 앱 콘솔에 경고가 찍힙니다.
@@ -95,7 +104,7 @@ npm run dist:linux        # dist/Vinylnyl.AppImage  (Linux에서)
 확장 zip과 함께 릴리즈에 올려요. 릴리즈 노트는 `RELEASE_NOTES.md`를 씁니다.
 
 ```bash
-git tag v1.0.1 && git push origin main v1.0.1
+git tag v1.1.0 && git push origin main v1.1.0
 ```
 
 **로그인할 때 자동으로 켜지게 하려면:** macOS는 시스템 설정 → 일반 → 로그인 항목,

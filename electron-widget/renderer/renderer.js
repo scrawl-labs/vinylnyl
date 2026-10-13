@@ -34,8 +34,8 @@
     widget.classList.add('idle');
     lastTitleKey = null;
     titleEl.textContent = 'Vinylnyl';
-    artistEl.textContent = 'YouTube Music 위젯';
-    statusEl.textContent = connected ? '재생 대기 중…' : 'YouTube Music 연결 대기 중…';
+    artistEl.textContent = '지금 재생 중인 음악';
+    statusEl.textContent = connected ? '재생 대기 중…' : '재생 중인 음악을 기다리는 중…';
     iconPlay.style.display = '';
     iconPause.style.display = 'none';
     resetMarquee();
@@ -71,7 +71,7 @@
     const artist = (data.artist || '').trim();
     const titleKey = title + '\u0000' + artist;
 
-    artistEl.textContent = artist || 'YouTube Music';
+    artistEl.textContent = artist || '알 수 없는 아티스트';
 
     if (titleKey !== lastTitleKey) {
       lastTitleKey = titleKey;

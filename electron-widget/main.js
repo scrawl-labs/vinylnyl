@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const { execFile } = require('child_process');
 const { createBridge } = require('./bridge');
+const { createOsMedia } = require('./os-media');
 
 const POS_FILE = path.join(app.getPath('userData'), 'widget-pos.json');
 const MAC_DIR = path.join(__dirname, 'mac');
@@ -121,7 +122,7 @@ function createTray() {
     icon = nativeImage.createFromPath(path.join(__dirname, 'tray', 'icon.png')).resize({ width: 32, height: 32 });
   }
   tray = new Tray(icon);
-  tray.setToolTip('Vinylnyl — YouTube Music 위젯');
+  tray.setToolTip('Vinylnyl — 지금 재생 중인 음악 위젯');
   const menu = Menu.buildFromTemplate([
     {
       label: '위젯 보이기/숨기기',
@@ -169,27 +170,39 @@ function startWatchdog() {
   }, 1500);
 }
 
-// --- Browser extension (all OSes / browsers) ---
-// The extension pushes now-playing state over a local WebSocket. While it is
-// active, the macOS AppleScript path below only needs to cover Safari.
-const EXTENSION_FRESH_MS = 3500;
-let lastExtensionAt = 0;
+// --- Sources ---
+// Now-playing state can come from three places; the widget shows the freshest one and prefers
+// a source that is actually playing. Controls go only to that source so they never fire twice.
+//   extension: browser extension over the local WebSocket (all OSes)
+//   mac:       AppleScript into Safari / Chromium browsers (macOS only, no extension needed)
+//   os:        the OS media session (Windows / Linux, no extension needed)
+const FRESH_MS = 3500;
+const SOURCE_PRIORITY = ['extension', 'mac', 'os'];
+const latest = {};
+let activeSource = null;
 let bridge = null;
+let osMedia = null;
 
-function extensionActive() {
-  return Date.now() - lastExtensionAt < EXTENSION_FRESH_MS;
+function sourceFresh(name) {
+  return !!latest[name] && Date.now() - latest[name].at < FRESH_MS;
 }
 
-function onExtensionState(data) {
-  lastExtensionAt = Date.now();
-  markConnected(data);
+function report(source, data) {
+  latest[source] = { data, at: Date.now() };
+  let best = null;
+  for (const name of SOURCE_PRIORITY) {
+    if (!sourceFresh(name)) continue;
+    if (!best || (latest[name].data.isPlaying && !latest[best].data.isPlaying)) best = name;
+  }
+  activeSource = best;
+  markConnected(latest[best].data);
 }
 
-// --- macOS fallback via AppleScript ("Allow JavaScript from Apple Events") ---
+// --- macOS AppleScript ("Allow JavaScript from Apple Events") ---
 // Works without the extension, and is the only way to reach Safari.
 function appleScriptBrowsers() {
   if (process.platform !== 'darwin') return [];
-  return extensionActive() ? BROWSERS.filter((b) => b.name === 'safari') : BROWSERS;
+  return sourceFresh('extension') ? BROWSERS.filter((b) => b.name === 'safari') : BROWSERS;
 }
 
 function pollBrowsers() {
@@ -200,7 +213,7 @@ function pollBrowsers() {
       if (!out || out === 'null') return;
       let data;
       try { data = JSON.parse(out); } catch (e) { return; }
-      if (data && data.type === 'nowPlaying') markConnected(data);
+      if (data && data.type === 'nowPlaying') report('mac', data);
     });
   }
 }
@@ -210,15 +223,20 @@ function startPolling() {
   pollTimer = setInterval(pollBrowsers, 1000);
 }
 
-function sendControlToBrowsers(action) {
-  if (bridge) bridge.sendControl(action);
-  for (const b of appleScriptBrowsers()) {
-    execFile('osascript', [b.control, action], { timeout: 4000 }, () => {});
+function sendControl(action) {
+  if (activeSource === 'extension' && bridge) {
+    bridge.sendControl(action);
+  } else if (activeSource === 'mac') {
+    for (const b of appleScriptBrowsers()) {
+      execFile('osascript', [b.control, action], { timeout: 4000 }, () => {});
+    }
+  } else if (activeSource === 'os' && osMedia) {
+    osMedia.control(action);
   }
 }
 
 ipcMain.on('control', (event, action) => {
-  sendControlToBrowsers(action);
+  sendControl(action);
   // Poll again shortly after so the widget reflects the change quickly,
   // instead of waiting for the next scheduled 1s tick.
   setTimeout(pollBrowsers, 250);
@@ -242,7 +260,8 @@ if (!app.requestSingleInstanceLock()) {
   app.whenReady().then(() => {
     createWindow();
     createTray();
-    bridge = createBridge({ onState: onExtensionState });
+    bridge = createBridge({ onState: (data) => report('extension', data) });
+    osMedia = createOsMedia({ onState: (data) => report('os', data) });
     startPolling();
     startWatchdog();
   });
@@ -256,4 +275,5 @@ app.on('before-quit', () => {
   if (pollTimer) clearInterval(pollTimer);
   if (watchdogTimer) clearInterval(watchdogTimer);
   if (bridge) bridge.close();
+  if (osMedia) osMedia.close();
 });
