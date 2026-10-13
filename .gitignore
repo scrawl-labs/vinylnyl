@@ -10,3 +10,4 @@ electron-widget/.claude/
 electron-widget/data/
 electron-widget/install.log
 Claude outputs/
+.vercel
