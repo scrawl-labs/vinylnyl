@@ -1,6 +1,6 @@
 {
   "name": "vinylnyl-widget",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "YouTube Music now-playing 레코드판 위젯 (macOS / Windows / Linux, 브라우저 확장 연동)",
   "main": "main.js",
   "private": true,

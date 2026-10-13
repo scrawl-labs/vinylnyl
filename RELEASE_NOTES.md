@@ -1,6 +1,10 @@
-## Vinylnyl 1.0.0
+## Vinylnyl 1.0.1
 
 First release. A floating, always-on-top spinning vinyl widget for YouTube Music — on **macOS, Windows and Linux**.
+
+### What's new in 1.0.1
+- Fix: the Windows/Linux tray icon was missing in packaged builds
+- Launching the app again now brings the widget back instead of doing nothing
 
 ### Downloads
 | | |

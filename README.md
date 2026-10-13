@@ -95,7 +95,7 @@ npm run dist:linux        # dist/Vinylnyl.AppImage  (Linux에서)
 확장 zip과 함께 릴리즈에 올려요. 릴리즈 노트는 `RELEASE_NOTES.md`를 씁니다.
 
 ```bash
-git tag v1.0.0 && git push origin main v1.0.0
+git tag v1.0.1 && git push origin main v1.0.1
 ```
 
 **로그인할 때 자동으로 켜지게 하려면:** macOS는 시스템 설정 → 일반 → 로그인 항목,
