@@ -118,7 +118,7 @@ function createTray() {
     icon.setTemplateImage(true);
   } else {
     // Template (monochrome) icons are a macOS thing; use the full-colour app icon elsewhere.
-    icon = nativeImage.createFromPath(path.join(__dirname, 'build', 'icon.png')).resize({ width: 32, height: 32 });
+    icon = nativeImage.createFromPath(path.join(__dirname, 'tray', 'icon.png')).resize({ width: 32, height: 32 });
   }
   tray = new Tray(icon);
   tray.setToolTip('Vinylnyl — YouTube Music 위젯');
@@ -233,6 +233,12 @@ ipcMain.on('quit-app', () => {
 if (!app.requestSingleInstanceLock()) {
   app.quit();
 } else {
+  // A second launch (e.g. double-clicking the app again) should bring the widget back
+  // instead of silently doing nothing.
+  app.on('second-instance', () => {
+    if (!mainWindow) createWindow();
+    else mainWindow.show();
+  });
   app.whenReady().then(() => {
     createWindow();
     createTray();
