@@ -1,6 +1,6 @@
 {
   "name": "vinylnyl-widget",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "지금 재생 중인 음악을 보여주는 레코드판 위젯 (macOS / Windows / Linux)",
   "main": "main.js",
   "private": true,

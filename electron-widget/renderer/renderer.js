@@ -19,15 +19,22 @@
   let lastThumb = '';
   let lastTitleKey = null;
 
-  // If a thumbnail URL 404s or fails to load for any reason, fall back to
-  // the empty record label instead of leaving a broken-image icon on it.
-  // Important: keep `lastThumb` pointed at the failed URL (don't reset it
-  // to '') so the next 1s poll tick -- which will report the same
-  // thumbnail URL for the same song -- doesn't immediately retry and fail
-  // again in a tight flicker loop.
-  cover.addEventListener('error', () => {
-    cover.removeAttribute('src');
-  });
+  // Load the thumbnail off-screen first and only hand it to the visible <img>
+  // once it has decoded. A failed load therefore never reaches the DOM, so
+  // Chromium has no chance to paint its broken-image icon on the label.
+  // `lastThumb` stays pointed at a failed URL (don't reset it to '') so the
+  // next 1s poll tick -- which reports the same URL for the same song --
+  // doesn't retry in a tight loop.
+  function showCover(url) {
+    const probe = new Image();
+    probe.onload = () => {
+      if (url === lastThumb) cover.src = url;
+    };
+    probe.onerror = () => {
+      if (url === lastThumb) cover.removeAttribute('src');
+    };
+    probe.src = url;
+  }
 
   function setIdle() {
     widget.classList.remove('playing');
@@ -81,7 +88,8 @@
 
     if (data.thumbnail && data.thumbnail !== lastThumb) {
       lastThumb = data.thumbnail;
-      cover.src = data.thumbnail;
+      cover.removeAttribute('src');
+      showCover(data.thumbnail);
     } else if (!data.thumbnail && lastThumb !== '') {
       lastThumb = '';
       cover.removeAttribute('src');

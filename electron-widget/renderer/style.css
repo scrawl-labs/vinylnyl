@@ -323,3 +323,8 @@ html, body {
 .close-btn:hover {
   background: rgba(220, 60, 60, 0.85);
 }
+
+/* Never paint anything (e.g. a broken-image icon) while there is no loaded cover. */
+.label img:not([src]) {
+  visibility: hidden;
+}

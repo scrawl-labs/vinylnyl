@@ -1,15 +1,7 @@
-## Vinylnyl 1.1.0
+## Vinylnyl 1.1.1
 
-Vinylnyl now shows **whatever is playing** — YouTube, YouTube Music, Spotify and more — and on Windows and Linux it
-needs **no browser extension** any more.
-
-### What's new
-- **Windows:** reads the system media controls directly. Install the app and it just works.
-- **Linux:** reads MPRIS through `playerctl` (install it with your package manager). *Not tested on a real Linux desktop yet.*
-- **macOS:** unchanged — Safari and Chrome-based browsers via Apple Events.
-- The browser extension is now **optional** (Firefox, sharper track info) and also understands regular YouTube pages.
-- The widget is no longer YouTube-Music-only: new wording, and it shows any player that reports to the OS.
-- Controls (previous / play-pause / next) go to the source that is currently playing, so nothing fires twice.
+### Fixes
+- No more broken-image icon on the record label when a track's cover art fails to load. The label now stays empty instead.
 
 ### Downloads
 | | |
