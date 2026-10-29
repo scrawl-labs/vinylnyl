@@ -21,6 +21,7 @@
 /* Hallmark · dropped the "What it looks like, live." log panel and its sample times (00:41) · a drawn window (47a); its facts (title and artist, album art, position restored on launch, playback control) moved into the switcher and the feature rows */
 /* Hallmark · reworded "Works right inside your browser." to "Works with what you already play." · the old head no longer matched what the section says (it reads system media first) */
 /* Hallmark · reworded the feature titles to sentence-case rows ("Any Browser, Any OS" to "Any player, any OS", "Always-on-Top Widget" to "Always on top") and folded "100% Local" into the privacy readouts · one fact, one place */
+/* Hallmark · waive 81 · div.disc and its layers are the widget's record rebuilt from its own CSS, with a printed label · the gradients are the vinyl itself, rebuilt so the light holds still while the platter turns */
 /* Hallmark · waive 59 · the close and the footer stand 240px apart on screen · the measure counts the hidden bodies of the closed setup disclosures */
 /* Hallmark · waive 77 · the systems section holds a four-row table on seven columns beside its head · a table of the real systems is the section's mass, a picture would only repeat the hero */
 /* Hallmark · reworded "Real Vinyl Animation", "Full Playback Control" and "Menu Bar Tray" to sentence case · the words are unchanged, only the case */
@@ -32,7 +33,11 @@
 :root {
   /* brand amber kept from the old page, on Lumen's lightness */
   --color-accent: oklch(80% 0.15 75); --color-accent-hover: oklch(86% 0.13 75); --color-focus: oklch(80% 0.15 75);
-  --spin: 5.5s;
+  /* 33 1/3 rpm */
+  --spin: 1.8s;
+  --vinyl-hi: oklch(38% 0.004 290); --vinyl-mid: oklch(21% 0.004 290); --vinyl-lo: oklch(9% 0.004 290);
+  --vinyl-groove: oklch(100% 0 0 / 0.05); --vinyl-sheen: oklch(100% 0 0 / 0.13); --vinyl-sheen-2: oklch(100% 0 0 / 0.08);
+  --vinyl-edge: oklch(100% 0 0 / 0.07); --vinyl-depth: oklch(0% 0 0 / 0.65); --vinyl-ring: oklch(0% 0 0 / 0.55);
   --nav-h: 72px;
 }
 .readout { font-variant-numeric: tabular-nums; }
@@ -84,12 +89,18 @@ a:active { color: var(--color-ink-2); }
 .stage.stage--hero figcaption { position: static; }
 /* the base capture is cropped to the record and its title (the dock area below is empty at rest) */
 .deck { position: relative; height: 100%; aspect-ratio: 250 / 246; max-width: 100%; margin-inline: auto; }
-.deck > img { position: absolute; }
-.deck__base { inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
-.deck__disc { left: 14.8%; top: 7.317%; width: 70.4%; height: 71.54%; }
+/* the record is the widget's own CSS, rebuilt so the light stays put and only the grooves and label turn, like a real platter */
+.deck__base { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.disc { position: absolute; left: 14.8%; top: 7.317%; width: 70.4%; aspect-ratio: 1; border-radius: 50%; overflow: hidden; background: radial-gradient(circle at 32% 28%, var(--vinyl-hi) 0%, var(--vinyl-mid) 45%, var(--vinyl-lo) 100%); box-shadow: inset 0 0 0 1px var(--vinyl-edge), inset 0 0 12cqw var(--vinyl-depth); container-type: inline-size; }
+.disc__turn { position: absolute; inset: 0; border-radius: 50%; background-image: repeating-radial-gradient(circle at center, var(--vinyl-groove) 0, var(--vinyl-groove) 1px, transparent 1.6px, transparent 4px); will-change: transform; }
+.disc__label { position: absolute; inset: 31.8%; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 7cqw 2cqw 6.5cqw; text-align: center; background: var(--color-accent); color: var(--color-accent-ink); box-shadow: 0 0 0 1.7cqw var(--vinyl-ring), 0 0 0 2.3cqw var(--vinyl-edge); font-family: var(--font-display); }
+.disc__label b { font-weight: 800; font-size: 5.6cqw; letter-spacing: -0.03em; line-height: 1; }
+.disc__label small { display: block; font: 500 2.4cqw/1.25 var(--font-body); }
+.disc__sheen { position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 200deg, var(--vinyl-sheen), transparent 28%, transparent 68%, var(--vinyl-sheen-2)); pointer-events: none; }
+.disc__spindle { position: absolute; left: 50%; top: 50%; width: 4cqw; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%); background: var(--vinyl-lo); box-shadow: 0 0 0 1px var(--vinyl-edge); }
 @keyframes spin { to { transform: rotate(1turn); } }
-[data-loop] .deck__disc { animation: spin var(--spin) linear infinite; }
-[data-loop]:not(.is-running) .deck__disc { animation-play-state: paused; }
+[data-loop] .disc__turn { animation: spin var(--spin) linear infinite; }
+[data-loop]:not(.is-running) .disc__turn { animation-play-state: paused; }
 .loop-toggle { font: 400 var(--text-xs)/1 var(--font-outlier); color: var(--color-ink-2); background: transparent; border: 0; padding: var(--space-2xs) 0; cursor: pointer; text-decoration: underline; text-decoration-color: var(--color-rule-2); text-underline-offset: 0.2em; transition: color var(--dur-short) var(--ease-out); }
 .loop-toggle:hover { color: var(--color-ink); text-decoration-color: var(--color-accent); }
 .loop-toggle:active { color: var(--color-muted); }
@@ -241,7 +252,11 @@ html:not(.js) .loop-toggle { display: none; }
           <div class="shot" data-loop>
             <div class="deck">
               <img class="deck__base" src="img/hero-base.png" width="750" height="960" alt="The Vinylnyl widget playing love. by wave to earth" fetchpriority="high">
-              <img class="deck__disc" src="img/hero-disc.png" width="528" height="528" alt="">
+              <div class="disc" aria-hidden="true">
+                <div class="disc__turn"><div class="disc__label"><b>Vinylnyl</b><span><small>Side A</small><small>33 rpm</small></span></div></div>
+                <div class="disc__sheen"></div>
+                <div class="disc__spindle"></div>
+              </div>
             </div>
           </div>
           <figcaption><button class="loop-toggle" type="button" data-loop-toggle>Pause</button></figcaption>
