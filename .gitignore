@@ -11,3 +11,6 @@ electron-widget/data/
 electron-widget/install.log
 Claude outputs/
 .vercel
+
+# Hallmark design-tool scratch (screenshots, lint records)
+.hallmark/
