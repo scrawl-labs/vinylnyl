@@ -1,607 +1,431 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Vinylnyl — One Widget for All Your Sound.</title>
+<title>Vinylnyl: whatever is playing, as a spinning record</title>
 <meta name="description" content="지금 재생 중인 음악을 진짜 돌아가는 레코드판 위젯으로 보여주는 macOS · Windows · Linux 앱. YouTube, YouTube Music, Spotify 등 어떤 플레이어든. 100% 로컬, 계정 없음, 클라우드 없음." />
 <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Geist:wght@400;500&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#121212;
-    --bg-soft:#181818;
-    --card:#1d1d1f;
-    --card-soft:#232325;
-    --border:rgba(255,255,255,0.08);
-    --border-strong:rgba(255,255,255,0.16);
-    --text:#ffffff;
-    --text-dim:#a7a7ab;
-    --text-dimmer:#6a6a6e;
-    --green:#f2b134;
-    --green-dim:#d9932a;
-    --green-soft:rgba(242,177,52,0.14);
-    --gold:#f2b134;
-    --radius:24px;
-  }
-  *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    margin:0;
-    background:var(--bg);
-    color:var(--text);
-    font-family:"Poppins",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
-    -webkit-font-smoothing:antialiased;
-    overflow-x:hidden;
-  }
-  a{color:inherit;text-decoration:none;}
-  .wrap{max-width:1160px;margin:0 auto;padding:0 24px;}
+/* Hallmark · shape: Split Studio · genre: atmospheric · theme: Lumen (deal 2/3, seed free-desktop-widget-shows-80fe·78b9b1d3·2026-10-29·r0) · redesign: full · draw: d2f92b
+ * hero: Counter (swapped from Banner: the download and the widget are the first screen) · nav: edge-aligned · footer: letter close · imagery: screenshots 4 (the widget renderer, captured) · signature: the real widget, captured from the app and set at full size beside the download
+ * axes: dark/roman-serif/warm · posture: restrained · contrast: pass · fold: pass · brand: the amber accent and the disc icon kept · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V4 · weakest: P and S, the kept headline has no verb, so the page argues through the real widget states instead of a slogan */
+/* Hallmark · dropped the ticker, the swatch row, the drawn browser icons and the drawn mac windows · decoration and drawn chrome (47a, 80) */
+/* Hallmark · dropped "Detected in <1s" · an unmeasured metric (46a) */
+/* Hallmark · dropped the "What it looks like, live." log panel and its sample times (00:41) · a drawn window (47a); its facts (title and artist, album art, position restored on launch, playback control) moved into the switcher and the feature rows */
+/* Hallmark · reworded "Works right inside your browser." to "Works with what you already play." · the old head no longer matched what the section says (it reads system media first) */
+/* Hallmark · reworded the feature titles to lowercase rows ("Any Browser, Any OS" to "Any player, any OS", "Always-on-Top Widget" to "Always on top") and folded "100% Local" into the privacy readouts · Lumen sets heads lowercase; one fact, one place */
+/* Hallmark · waive 59 · the close and the footer stand 240px apart on screen · the measure counts the hidden bodies of the closed setup disclosures */
+/* Hallmark · waive 77 · the systems section holds a four-row table on seven columns beside its head · a table of the real systems is the section's mass, a picture would only repeat the hero */
+/* Hallmark · reworded "Real Vinyl Animation", "Full Playback Control" and "Menu Bar Tray" to sentence case · Lumen sets heads lowercase, the words are unchanged */
+/* Hallmark · reworded the hero line, the section intros and the setup notes because they carried em dashes and middle-dot strings · 19, 63 */
+@import url("./tokens.css");
+@import url("./base.css");
 
-  /* ---------- Nav ---------- */
-  header.nav{position:sticky;top:0;z-index:50;background:rgba(18,18,18,0.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
-  .nav-inner{max-width:1160px;margin:0 auto;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;}
-  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;letter-spacing:-0.01em;}
-  .brand-disc{width:28px;height:28px;border-radius:50%;flex:0 0 auto;
-    background:radial-gradient(circle at 35% 30%,#5a5a5a,#232323 45%,#060606 100%);
-    box-shadow:0 0 0 1px rgba(255,255,255,0.08) inset;position:relative;
-  }
-  .brand-disc::after{content:"";position:absolute;inset:36%;border-radius:50%;background:radial-gradient(circle at 38% 32%,#fff,#f0f0f0 60%,#dcdcdc 100%);}
-  nav.links{display:flex;gap:32px;font-size:14px;font-weight:500;color:var(--text-dim);}
-  nav.links a:hover{color:var(--text);}
+:root {
+  /* brand amber kept from the old page, on Lumen's lightness */
+  --color-accent: oklch(80% 0.15 75); --color-accent-hover: oklch(86% 0.13 75); --color-focus: oklch(80% 0.15 75);
+  --nav-h: 72px;
+}
+body { font-variant-numeric: tabular-nums; }
+h1, h2, h3, nav, .btn, figcaption, .tab, .label { text-transform: lowercase; }
+h2 { font-size: var(--text-display-s); line-height: 0.98; }
+h1 { line-height: 0.96; font-size: clamp(3rem, 5.4vw + 0.5rem, 5.75rem); max-width: 11ch; }
+.lead { color: var(--color-ink-2); }
+.muted { color: var(--color-muted); }
+.readout { font: 400 var(--text-xs)/1.5 var(--font-outlier); color: var(--color-ink-2); }
+code { font-family: var(--font-outlier); font-size: var(--text-xs); color: var(--color-ink); background: var(--color-paper-3); border-radius: var(--space-2xs); padding: var(--space-3xs) var(--space-2xs); }
 
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:100px;font-size:14px;font-weight:600;border:1px solid transparent;cursor:pointer;white-space:nowrap;transition:transform .15s ease, background .15s ease;}
-  .btn:hover{transform:translateY(-1px);}
-  .btn-primary{background:var(--green);color:#0a0a0a;}
-  .btn-primary:hover{background:#ffc866;}
-  .btn-outline{background:transparent;border-color:var(--border-strong);color:var(--text);}
-  .btn-outline:hover{border-color:rgba(255,255,255,0.4);}
-  .btn-ghost{background:rgba(255,255,255,0.08);color:var(--text);}
-  .btn-lg{padding:15px 28px;font-size:15px;}
+/* links and controls */
+a { text-decoration-color: transparent; transition: text-decoration-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out); }
+a:hover { text-decoration-line: underline; text-decoration-color: var(--color-accent); }
+a:active { color: var(--color-ink-2); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xs); min-height: 48px; padding: 0 var(--space-lg); border: 0; border-radius: var(--radius-pill); font: 500 var(--text-md)/1 var(--font-body); white-space: nowrap; text-decoration: none; cursor: pointer; color: var(--color-ink); box-shadow: inset 0 0 0 var(--rule-hair) var(--color-rule-2); background: transparent; transition: background-color var(--dur-short) var(--ease-out), transform var(--dur-micro) var(--ease-out); }
+.btn:hover { background: var(--color-paper-2); text-decoration: none; }
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.btn[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; transform: none; }
+.btn--primary { background: var(--color-accent); color: var(--color-accent-ink); box-shadow: none; }
+.btn--primary:hover { background: var(--color-accent-hover); }
+.btn--small { min-height: 44px; padding: 0 var(--space-md); font-size: var(--text-sm); }
+.btn svg { width: 16px; height: 16px; flex-shrink: 0; }
 
-  /* ---------- Hero ---------- */
-  .hero-outer{padding:20px 24px 0;}
-  .hero{
-    max-width:1160px;margin:0 auto;border-radius:36px;overflow:hidden;position:relative;
-    background:#161616;
-    padding:76px 56px;
-    display:flex;align-items:center;gap:40px;
-  }
-  .hero::before{
-    content:"";position:absolute;right:-180px;top:50%;transform:translateY(-50%);
-    width:760px;height:760px;border-radius:50%;
-    background:radial-gradient(circle at 40% 35%, rgba(242,177,52,0.5), rgba(242,177,52,0.16) 45%, transparent 70%);
-    filter:blur(4px);
-    z-index:0;
-  }
-  .hero-text{position:relative;z-index:2;flex:0 0 auto;width:46%;}
-  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:0.06em;color:var(--text);background:rgba(255,255,255,0.08);padding:7px 16px;border-radius:100px;margin-bottom:26px;}
-  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--green);}
-  h1.headline{font-size:52px;line-height:1.08;font-weight:800;letter-spacing:-0.02em;margin:0;}
-  .sub{margin:24px 0 0;max-width:460px;font-size:16px;line-height:1.7;color:var(--text-dim);}
-  .cta-row{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap;}
+/* nav */
+.skip { position: absolute; left: var(--space-md); top: calc(-1 * var(--space-3xl)); z-index: var(--z-toast); padding: var(--space-xs) var(--space-md); background: var(--color-ink); color: var(--color-paper); }
+.skip:focus-visible { top: var(--space-md); }
+.nav { position: sticky; top: 0; z-index: var(--z-sticky-nav); background: var(--color-paper); border-bottom: var(--rule-hair) solid var(--color-rule); }
+.nav .container { height: var(--nav-h); display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg); }
+.wordmark { display: inline-flex; align-items: center; gap: var(--space-xs); font: 400 var(--text-xl)/1 var(--font-display); letter-spacing: var(--tracking-display); text-decoration: none; text-transform: lowercase; }
+.wordmark img { width: 28px; height: 28px; border-radius: 7px; }
+.nav__right { display: flex; align-items: center; gap: var(--space-lg); }
+.nav__links { display: flex; gap: var(--space-lg); font-size: var(--text-sm); color: var(--color-ink-2); }
+.nav__links a:hover { color: var(--color-ink); }
 
-  .hero-visual{position:relative;z-index:2;flex:1;min-width:0;height:420px;}
-  .mac-window{
-    position:absolute;left:0;top:20px;width:100%;max-width:480px;
-    background:#0f0f10;border:1px solid rgba(255,255,255,0.08);border-radius:18px;
-    overflow:hidden;box-shadow:0 50px 90px -30px rgba(0,0,0,0.7);
-    transform:rotate(-2.5deg);
-  }
-  .mac-titlebar{display:flex;align-items:center;gap:8px;padding:12px 16px;background:#161617;border-bottom:1px solid rgba(255,255,255,0.06);}
-  .mac-dot{width:11px;height:11px;border-radius:50%;}
-  .mac-dot.r{background:#ff5f57;} .mac-dot.y{background:#febc2e;} .mac-dot.g{background:#28c840;}
-  .mac-title{margin-left:8px;font-size:12px;color:var(--text-dimmer);}
-  .mac-body{display:flex;align-items:center;justify-content:center;padding:40px 20px;background:#0c0c0d;}
+/* hero */
+.hero .container { min-height: min(calc(100svh - var(--nav-h)), 860px); display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); align-items: center; padding-block: var(--space-xl); }
+.hero__text { display: grid; gap: var(--space-lg); }
+.hero__text .lead { max-width: 34ch; }
+.get { display: grid; gap: var(--space-sm); margin-top: var(--space-xs); }
+.get__row { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+.get .readout { color: var(--color-muted); }
 
-  .float-card{
-    position:absolute;right:-4%;top:-8%;width:210px;
-    background:var(--card);border:1px solid var(--border);border-radius:18px;
-    padding:16px 18px;box-shadow:0 30px 60px -20px rgba(0,0,0,0.6);
-    transform:rotate(5deg);z-index:3;
-  }
-  .float-card .fc-label{font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--green);margin-bottom:6px;}
-  .float-card .fc-title{font-size:14px;font-weight:700;}
-  .float-card .fc-artist{font-size:12px;color:var(--text-dim);margin-top:2px;}
-  .float-card .fc-bars{display:flex;align-items:flex-end;gap:3px;height:16px;margin-top:10px;}
-  .float-card .fc-bars span{width:3px;background:var(--green);border-radius:2px;animation:bars 1s ease-in-out infinite;}
-  .float-card .fc-bars span:nth-child(1){height:40%;animation-delay:0s;}
-  .float-card .fc-bars span:nth-child(2){height:100%;animation-delay:.15s;}
-  .float-card .fc-bars span:nth-child(3){height:65%;animation-delay:.3s;}
-  .float-card .fc-bars span:nth-child(4){height:85%;animation-delay:.45s;}
-  .float-card .fc-bars span:nth-child(5){height:50%;animation-delay:.6s;}
-  @keyframes bars{0%,100%{transform:scaleY(0.4);}50%{transform:scaleY(1);}}
+.stage { position: relative; margin: 0; border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); background-color: var(--color-paper-2); background-image: linear-gradient(var(--rule-blueprint) 1px, transparent 1px), linear-gradient(90deg, var(--rule-blueprint) 1px, transparent 1px); background-size: 48px 48px; background-position: -1px -1px; }
+.stage--hero { aspect-ratio: 5 / 4; min-height: 520px; }
+.stage figcaption { position: absolute; left: var(--space-lg); bottom: var(--space-md); right: var(--space-lg); display: flex; justify-content: space-between; gap: var(--space-md); }
 
-  /* widget mockup (disc) */
-  .widget-mock{text-align:center;}
-  .disc-stage{position:relative;width:200px;height:200px;margin:0 auto;}
-  .disc-shadow-el{position:absolute;left:8px;top:14px;width:200px;height:200px;border-radius:50%;background:rgba(0,0,0,0.4);filter:blur(16px);z-index:0;}
-  .disc{
-    position:absolute;inset:0;border-radius:50%;
-    background:radial-gradient(circle at 35% 30%,#5a5a5a,#232323 45%,#060606 100%);
-    box-shadow:0 8px 20px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.06), inset 0 0 30px rgba(0,0,0,0.6);
-    animation:spin 4.5s linear infinite;z-index:1;
-  }
-  .disc::before{content:"";position:absolute;inset:8%;border-radius:50%;
-    background:repeating-radial-gradient(circle, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 7px);
-  }
-  .disc-label{position:absolute;inset:36%;border-radius:50%;overflow:hidden;
-    background:radial-gradient(circle at 38% 32%,#fff,#f0f0f0 60%,#dcdcdc 100%);
-    display:flex;align-items:center;justify-content:center;
-  }
-  .disc-spindle{position:absolute;width:8px;height:8px;border-radius:50%;background:#0a0a0a;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;}
-  @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
-  .now-title{margin-top:16px;font-size:14px;font-weight:700;}
-  .now-artist{margin-top:2px;font-size:12px;color:var(--text-dim);}
-  .now-controls{display:flex;justify-content:center;gap:14px;margin-top:14px;}
-  .now-controls .c{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;}
+/* captured product: no photo treatment, never cropped */
+[data-kind="product"] { background: transparent; }
+[data-kind="product"]:has(> img) { background: transparent; outline: 0; isolation: auto; }
+[data-kind="product"]:has(> img)::before { content: none; }
+[data-kind="product"] > img { filter: none; mix-blend-mode: normal; object-fit: contain; }
+.shot { position: absolute; inset: var(--space-lg) var(--space-lg) var(--space-2xl); }
 
-  /* ---------- Ticker ---------- */
-  .ticker-wrap{margin-top:64px;overflow:hidden;}
-  .ticker{display:flex;white-space:nowrap;animation:ticker 26s linear infinite;padding:16px 0;}
-  .ticker span{font-size:13px;font-weight:500;color:var(--text-dimmer);padding:0 28px;border-right:1px solid var(--border);}
-  @keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+/* sections */
+.section { padding-block: var(--section-gap) 0; }
+.section--l { padding-block: var(--section-gap-l) 0; }
+.split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); align-items: start; }
+.split__text { display: grid; gap: var(--space-lg); align-content: start; }
+.split__text p { color: var(--color-ink-2); }
 
-  /* ---------- Section heading ---------- */
-  .section{max-width:1160px;margin:0 auto;padding:100px 24px 0;}
-  .section.tight{padding-top:64px;}
-  .section-center{text-align:center;}
-  .section-tag{font-size:12px;font-weight:600;letter-spacing:0.1em;color:var(--green);text-transform:uppercase;margin-bottom:14px;}
-  h2.section-title{font-size:34px;font-weight:800;letter-spacing:-0.02em;margin:0 0 14px;}
-  .section-desc{font-size:16px;color:var(--text-dim);max-width:520px;margin:0;line-height:1.6;}
-  .section-center .section-desc{margin-left:auto;margin-right:auto;}
-  .section-desc .hl{color:var(--green);font-weight:600;}
+/* how it reads: a table */
+.reads { width: 100%; border-collapse: collapse; }
+.reads caption { text-align: left; padding-bottom: var(--space-sm); }
+.reads th, .reads td { text-align: left; vertical-align: top; padding: var(--space-md) var(--space-md) var(--space-md) 0; border-top: var(--rule-hair) solid var(--color-rule); }
+.reads thead th { border-top: 0; font: 400 var(--text-sm)/1.4 var(--font-body); color: var(--color-muted); padding-block: 0 var(--space-sm); white-space: nowrap; }
+.reads tbody th { font: 400 var(--text-title)/1.1 var(--font-display); text-transform: lowercase; width: 22%; }
+.reads td { color: var(--color-ink-2); }
+.reads td + td { width: 30%; }
+.reads tr.ext th, .reads tr.ext td { color: var(--color-muted); }
+.browsers { margin: var(--space-2xs) 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+.browsers li { font-size: var(--text-sm); padding: var(--space-3xs) var(--space-sm); border: var(--rule-hair) solid var(--color-rule-2); border-radius: var(--radius-pill); color: var(--color-ink); }
 
-  /* ---------- Supported browsers ---------- */
-  .browser-row{margin-top:40px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
-  .browser-card{background:var(--card);border-radius:20px;padding:26px 28px;display:flex;flex-direction:column;align-items:center;gap:12px;min-width:128px;}
-  .browser-icon{width:52px;height:52px;border-radius:50%;position:relative;flex:0 0 auto;overflow:hidden;}
-  .browser-name{font-size:14px;font-weight:700;}
-  .browser-status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-dim);}
-  .dot-ok{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;flex:0 0 auto;}
+/* states: a switcher */
+.tabs { display: flex; flex-wrap: wrap; gap: var(--space-2xs); }
+.tab { min-height: 44px; padding: 0 var(--space-md); border: 0; border-radius: var(--radius-pill); background: transparent; color: var(--color-ink-2); box-shadow: inset 0 0 0 var(--rule-hair) var(--color-rule); font: 400 var(--text-sm)/1 var(--font-body); white-space: nowrap; cursor: pointer; transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out); }
+.tab:hover { background: var(--color-paper-2); color: var(--color-ink); }
+.tab:active { transform: translateY(1px); }
+.tab:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.tab[aria-selected="true"] { background: var(--color-paper-3); color: var(--color-ink); box-shadow: inset 0 0 0 var(--rule-hair) var(--color-rule-2); }
+.panel { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); align-items: center; }
+.panel + .panel { margin-top: var(--space-2xl); }
+.js .panel + .panel { margin-top: 0; }
+.panel__text { display: grid; gap: var(--space-sm); }
+.panel__text h3 { font-size: var(--text-xl); }
+.panel__text p { color: var(--color-ink-2); max-width: 40ch; }
+.stage--state { aspect-ratio: 16 / 10; min-height: 440px; }
+.switch { display: grid; gap: var(--space-xl); margin-top: var(--space-2xl); }
 
-  .chrome-icon{background:conic-gradient(from -90deg,#ea4335 0deg 120deg,#34a853 120deg 240deg,#fbbc05 240deg 360deg);}
-  .chrome-icon::before{content:'';position:absolute;inset:20%;border-radius:50%;background:#fff;}
-  .chrome-icon::after{content:'';position:absolute;inset:34%;border-radius:50%;background:#4285f4;}
+/* features: rows */
+.rows { margin: var(--space-2xl) 0 0; display: grid; }
+.rows > div { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); padding-block: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule); align-items: baseline; }
+.rows > div:last-child { border-bottom: var(--rule-hair) solid var(--color-rule); }
+.rows dt { font: 400 var(--text-title)/1.15 var(--font-display); text-transform: lowercase; }
+.rows dd { margin: 0; color: var(--color-ink-2); max-width: 52ch; }
+.head { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); align-items: end; }
+.head .lead { max-width: 44ch; }
 
-  .safari-icon{background:radial-gradient(circle at 32% 28%,#5ec8ff 0%,#1e88e5 55%,#0a5fb0 100%);box-shadow:inset 0 0 0 3px rgba(255,255,255,0.92);}
-  .safari-needle{position:absolute;inset:0;}
-  .safari-needle::before,.safari-needle::after{content:'';position:absolute;top:50%;left:50%;width:0;height:0;border-style:solid;transform-origin:0 0;}
-  .safari-needle::before{border-width:0 4px 20px 4px;border-color:transparent transparent #ff4d4d transparent;transform:rotate(45deg) translate(-4px,-20px);}
-  .safari-needle::after{border-width:20px 4px 0 4px;border-color:#fff transparent transparent transparent;transform:rotate(45deg) translate(-4px,0);}
+/* privacy: readouts in a well */
+.well { background: var(--color-paper-2); border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); }
+.facts { margin: 0; padding: var(--space-xl); display: grid; gap: 0; }
+.facts > div { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 5fr); gap: var(--space-lg); padding-block: var(--space-md); border-top: var(--rule-hair) solid var(--color-rule); }
+.facts > div:first-child { border-top: 0; padding-top: 0; }
+.facts > div:last-child { padding-bottom: 0; }
+.facts dt { font: 400 var(--text-xs)/1.6 var(--font-outlier); color: var(--color-muted); text-transform: lowercase; }
+.facts dd { margin: 0; color: var(--color-ink); }
+.facts dd .readout { display: block; margin-top: var(--space-2xs); color: var(--color-ink-2); }
+.figure-big { font: 400 clamp(4rem, 8vw, 7.5rem)/0.9 var(--font-display); letter-spacing: var(--tracking-display); text-transform: lowercase; }
 
-  .edge-icon{background:conic-gradient(from 210deg,#0c59a4,#0078d4 30%,#00b7c3 55%,#77c043 78%,#0c59a4 100%);}
-  .edge-icon::before{content:'';position:absolute;inset:20%;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,0.4),rgba(255,255,255,0) 65%);}
+/* close */
+.close { padding-block: var(--section-gap-l) var(--section-gap-s); }
+.close .split { align-items: center; }
+.stage--close { aspect-ratio: 4 / 5; min-height: 480px; max-height: 640px; justify-self: end; width: min(100%, 520px); }
+.setup { display: grid; margin-top: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule); }
+.setup details { border-bottom: var(--rule-hair) solid var(--color-rule); }
+.setup summary { min-height: 52px; display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); cursor: pointer; list-style: none; color: var(--color-ink); }
+.setup summary::-webkit-details-marker { display: none; }
+.setup summary::after { content: "+"; font-family: var(--font-outlier); color: var(--color-muted); }
+.setup details[open] summary::after { content: "\2212"; }
+.setup summary:hover { color: var(--color-accent); }
+.setup summary:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.setup .body { display: grid; gap: var(--space-sm); padding-bottom: var(--space-lg); color: var(--color-ink-2); font-size: var(--text-md); }
+.setup .body a { white-space: nowrap; text-decoration-line: underline; text-decoration-color: var(--color-rule-2); }
+.setup .body a:hover { text-decoration-color: var(--color-accent); }
+.setup strong { color: var(--color-ink); font-weight: 500; }
 
-  .brave-icon{background:#fb542b;}
-  .brave-icon::before{content:'';position:absolute;left:50%;top:16%;width:46%;height:60%;transform:translateX(-50%);background:#fff;clip-path:polygon(50% 0%,100% 16%,100% 56%,50% 100%,0% 56%,0% 16%);}
-  .brave-icon::after{content:'';position:absolute;left:50%;top:32%;width:18%;height:24%;transform:translateX(-50%);background:#fb542b;clip-path:polygon(50% 0%,100% 100%,0% 100%);}
+/* footer: a letter close */
+.foot { border-top: var(--rule-hair) solid var(--color-rule); padding-block: var(--section-gap-s) var(--space-xl); }
+.foot .container { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); align-items: end; }
+.foot__sign { display: grid; gap: var(--space-sm); }
+.foot__sign p { font: 400 var(--text-2xl)/1.1 var(--font-display); max-width: 28ch; text-transform: lowercase; }
+.foot__links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-sm) var(--space-lg); font-size: var(--text-sm); color: var(--color-ink-2); }
+.foot__links a:hover { color: var(--color-ink); }
+.foot small { font-size: var(--text-sm); color: var(--color-muted); }
 
-  .vivaldi-icon{background:radial-gradient(circle at 32% 26%,#ff6b57 0%,#d1272c 55%,#7a1414 100%);}
-
-  .opera-icon{background:#ff1b2d;}
-  .opera-icon::after{content:'';position:absolute;top:16%;left:36%;width:66%;height:66%;border-radius:50%;background:var(--card);}
-
-  /* ---------- Mini feature row (3 cards w/ preview) ---------- */
-  .mini-grid{margin-top:44px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-  .mini-card{background:var(--card);border-radius:20px;padding:22px;}
-  .mini-card h4{margin:0 0 16px;font-size:15px;font-weight:700;}
-  .mini-preview{border-radius:12px;background:var(--card-soft);height:130px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-
-  /* ---------- Feature grid (6 cards) ---------- */
-  .feature-grid{margin-top:44px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-  .feature-card{background:var(--card);border-radius:20px;padding:24px;}
-  .feature-card h3{margin:0 0 14px;font-size:15px;font-weight:700;}
-  .feature-card .fpad{border-radius:12px;background:var(--card-soft);height:96px;display:flex;align-items:center;padding:0 18px;gap:14px;}
-  .feature-card .fpad .ic{width:34px;height:34px;border-radius:50%;background:var(--green-soft);color:var(--green);display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
-  .feature-card p.desc{margin:14px 0 0;font-size:13px;line-height:1.6;color:var(--text-dim);}
-
-  /* ---------- Icon trio row ---------- */
-  .icon-trio{margin-top:44px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;text-align:center;}
-  .icon-trio .badge{width:56px;height:56px;border-radius:50%;border:1.5px solid var(--green);color:var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:22px;}
-  .icon-trio .cap{font-size:13.5px;color:var(--text-dim);max-width:200px;margin:0 auto;line-height:1.5;}
-
-  /* ---------- Live example ---------- */
-  .live-window{margin-top:44px;background:var(--card);border-radius:24px;overflow:hidden;}
-  .live-titlebar{display:flex;align-items:center;gap:8px;padding:14px 20px;background:var(--card-soft);}
-  .live-body{display:flex;}
-  .live-side{flex:0 0 280px;padding:32px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:
-    radial-gradient(circle at 30% 20%, rgba(242,177,52,0.16), transparent 55%),
-    radial-gradient(circle at 80% 85%, rgba(242,177,52,0.08), transparent 55%);
-  }
-  .live-info{flex:1;padding:32px 36px;}
-  .live-row{display:flex;justify-content:space-between;align-items:baseline;padding:15px 0;border-bottom:1px solid var(--border);font-size:13px;}
-  .live-row:last-child{border-bottom:none;}
-  .live-row .time{color:var(--text-dimmer);font-variant-numeric:tabular-nums;}
-  .live-row .src{color:var(--text-dim);}
-  .live-row .tag{display:inline-block;margin-left:8px;padding:3px 10px;border-radius:100px;font-size:11px;background:var(--green-soft);color:var(--green);font-weight:600;}
-
-  /* ---------- Footer CTA ---------- */
-  .footer-cta-outer{padding:120px 24px 0;}
-  .footer-cta{
-    max-width:1160px;margin:0 auto;border-radius:36px;position:relative;overflow:hidden;
-    background:#161616;text-align:center;padding:90px 24px 64px;
-  }
-  .footer-cta::before{
-    content:"";position:absolute;left:50%;bottom:-260px;transform:translateX(-50%);
-    width:820px;height:520px;border-radius:50%;
-    background:radial-gradient(ellipse at center, rgba(242,177,52,0.48), rgba(242,177,52,0.12) 50%, transparent 72%);
-    z-index:0;
-  }
-  .footer-cta-inner{position:relative;z-index:1;}
-  .footer-cta h2{font-size:38px;font-weight:800;letter-spacing:-0.02em;margin:0 0 16px;color:var(--green);}
-  .footer-cta p{color:var(--text-dim);font-size:15px;margin:0 0 30px;}
-  .req{margin-top:18px;font-size:12.5px;color:var(--text-dimmer);}
-
-  .trust-note{position:relative;z-index:1;margin:22px auto 0;max-width:460px;text-align:left;
-    background:var(--card);border-radius:14px;padding:14px 18px;}
-  .trust-note summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--text-dim);list-style:none;}
-  .trust-note summary::-webkit-details-marker{display:none;}
-  .trust-note summary::before{content:"＋ ";color:var(--green);}
-  .trust-note[open] summary::before{content:"－ ";}
-  .trust-note p{margin:12px 0 10px;font-size:12.5px;line-height:1.7;color:var(--text-dim);}
-  .trust-note code{display:block;background:var(--card-soft);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--green);overflow-x:auto;}
-
-  .swatch-row{position:relative;z-index:1;display:flex;justify-content:center;gap:14px;margin-top:56px;flex-wrap:wrap;}
-  .swatch{width:64px;height:64px;border-radius:50%;position:relative;box-shadow:0 12px 24px -8px rgba(0,0,0,0.5);}
-  .swatch::after{content:"";position:absolute;inset:38%;border-radius:50%;background:#0d0d0d;}
-  .swatch.s1{background:radial-gradient(circle at 35% 30%,#ffd873,#d9932a 60%,#5c400a);}
-  .swatch.s2{background:radial-gradient(circle at 35% 30%,#e8935a,#a85a2c 60%,#442409);}
-  .swatch.s3{background:radial-gradient(circle at 35% 30%,#8f8f9a,#3a3a40 60%,#0c0c0e);}
-  .swatch.s4{background:radial-gradient(circle at 35% 30%,#7ee0ff,#1c86a8 60%,#063341);}
-  .swatch.s5{background:radial-gradient(circle at 35% 30%,#ff9ecf,#c9427f 60%,#4c0f2c);}
-
-  footer.site-footer{padding:80px 24px 40px;}
-  .footer-grid{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px;}
-  .footer-brand .brand{margin-bottom:14px;}
-  .footer-brand p{font-size:13px;color:var(--text-dimmer);max-width:220px;line-height:1.6;}
-  .footer-col h5{margin:0 0 16px;font-size:13px;font-weight:700;color:var(--text);}
-  .footer-col a{display:block;font-size:13.5px;color:var(--text-dim);margin-bottom:12px;}
-  .footer-col a:hover{color:var(--text);}
-  .footer-bottom{max-width:1160px;margin:56px auto 0;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:12.5px;color:var(--text-dimmer);}
-
-  @media (max-width:900px){
-    .hero{flex-direction:column;padding:48px 28px;border-radius:24px;}
-    .hero-text{width:100%;text-align:center;}
-    .sub{margin-left:auto;margin-right:auto;}
-    .cta-row{justify-content:center;}
-    .hero-visual{width:100%;height:340px;}
-    .mac-window{max-width:100%;left:50%;transform:translateX(-50%) rotate(-2deg);}
-    .float-card{right:4%;top:-6%;}
-    h1.headline{font-size:36px;}
-    .mini-grid,.feature-grid{grid-template-columns:1fr;}
-    .icon-trio{grid-template-columns:1fr;gap:32px;}
-    .live-body{flex-direction:column;}
-    .live-side{width:100%;}
-    nav.links{display:none;}
-    .footer-grid{grid-template-columns:1fr 1fr;}
-    .footer-bottom{flex-direction:column;gap:10px;}
-  }
+@media (max-width: 60rem) {
+  .hero .container, .split, .panel, .head, .rows > div, .foot .container { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
+  .hero .container { min-height: 0; padding-block: var(--space-2xl); }
+  .stage--hero, .stage--state { min-height: 0; aspect-ratio: 4 / 5; }
+  .stage--close { justify-self: stretch; width: 100%; min-height: 0; }
+  .rows > div { gap: var(--space-xs); }
+  .nav__links { display: none; }
+  .foot__links { justify-content: flex-start; }
+  .reads thead { display: none; }
+  .reads tr { display: grid; gap: var(--space-2xs); padding-block: var(--space-md); border-top: var(--rule-hair) solid var(--color-rule); }
+  .reads th, .reads td { border: 0; padding: 0; width: auto !important; }
+  .reads td[data-label]::before { content: attr(data-label) ": "; color: var(--color-muted); }
+  .facts { padding: var(--space-lg); }
+  .facts > div { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); }
+}
+@media (max-width: 40rem) {
+  .shot { inset: var(--space-lg) var(--space-lg) var(--space-3xl); }
+  .stage figcaption .readout + .readout { display: none; }
+}
 </style>
 </head>
 <body>
+  <a class="skip" href="#main">Skip to content</a>
 
   <header class="nav">
-    <div class="nav-inner">
-      <div class="brand"><span class="brand-disc"></span>Vinylnyl</div>
-      <nav class="links">
-        <a href="#how">How it works</a>
-        <a href="#features">Features</a>
-        <a href="#privacy">Privacy</a>
-      </nav>
-      <a href="#download" class="btn btn-outline">Download</a>
+    <div class="container">
+      <a class="wordmark" href="#main" aria-label="Vinylnyl, back to top"><img src="favicon-64.png" width="64" height="64" alt="">Vinylnyl</a>
+      <div class="nav__right">
+        <nav class="nav__links" aria-label="Sections">
+          <a href="#how">How it works</a>
+          <a href="#features">Features</a>
+          <a href="#privacy">Privacy</a>
+        </nav>
+        <a href="#download" class="btn btn--small">Download</a>
+      </div>
     </div>
   </header>
 
-  <div class="hero-outer">
-    <section class="hero">
-      <div class="hero-text">
-        <div class="eyebrow"><span class="dot"></span> Mac · Windows · Linux · Always On Top</div>
-        <h1 class="headline">One widget for<br/>all your sound.</h1>
-        <p class="sub">Vinylnyl shows whatever is playing — YouTube, YouTube Music, Spotify and more — as a real spinning vinyl widget — floating over every app, always in view.</p>
-        <div class="cta-row">
-          <a href="#download" class="btn btn-primary btn-lg">Download</a>
-          <a href="#how" class="btn btn-ghost btn-lg">See how it works</a>
-        </div>
-      </div>
-
-      <div class="hero-visual">
-        <div class="mac-window">
-          <div class="mac-titlebar">
-            <span class="mac-dot r"></span><span class="mac-dot y"></span><span class="mac-dot g"></span>
-            <span class="mac-title">Vinylnyl — now playing</span>
-          </div>
-          <div class="mac-body">
-            <div class="widget-mock">
-              <div class="disc-stage">
-                <div class="disc-shadow-el"></div>
-                <div class="disc"><div class="disc-label"></div></div>
-                <div class="disc-spindle"></div>
-              </div>
-              <div class="now-title">love.</div>
-              <div class="now-artist">wave to earth</div>
-              <div class="now-controls">
-                <div class="c"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zM20 6L9 12l11 6z"/></svg></div>
-                <div class="c"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg></div>
-                <div class="c"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M18 6h-2v12h2zM4 6l11 6L4 18z"/></svg></div>
-              </div>
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container">
+        <div class="hero__text">
+          <h1 id="hero-title">One widget for all your sound.</h1>
+          <p class="lead">Vinylnyl shows whatever is playing as a spinning record, above every app.</p>
+          <div class="get">
+            <div class="get__row">
+              <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/Vinylnyl.dmg" class="btn btn--primary">Download for macOS</a>
+              <a href="#download" class="btn">Windows and Linux</a>
             </div>
+            <p class="readout">Free. <a href="#how">See how it works</a></p>
           </div>
         </div>
-        <div class="float-card">
-          <div class="fc-label">LIVE SYNC</div>
-          <div class="fc-title">Detected in &lt;1s</div>
-          <div class="fc-artist">Title · artist · art</div>
-          <div class="fc-bars"><span></span><span></span><span></span><span></span><span></span></div>
+
+        <figure class="stage stage--hero">
+          <div class="shot" data-slot="hero" data-kind="product" data-alt="The widget floating on a desktop, playing a song with its album art on the label">
+            <img src="img/widget-playing.png" width="750" height="960" alt="The Vinylnyl widget: a black record, the song love. by wave to earth beneath it, and previous, pause and next buttons" fetchpriority="high">
+          </div>
+          <figcaption><span class="readout">love. by wave to earth</span><span class="readout">captured from the app</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" id="browsers" aria-labelledby="reads-title">
+      <div class="container split">
+        <div class="split__text">
+          <h2 id="reads-title">Works with what you already play.</h2>
+          <p>Vinylnyl reads the media controls your system already has. YouTube, YouTube Music, Spotify and more show up without an extension.</p>
+        </div>
+        <table class="reads">
+          <caption class="visually-hidden">How Vinylnyl reads what is playing on each system</caption>
+          <thead><tr><th scope="col">System</th><th scope="col">How it reads</th><th scope="col">You install</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Windows</th><td data-label="Reads">The system media controls, any player.</td><td data-label="Install">Nothing else</td></tr>
+            <tr><th scope="row">Linux</th><td data-label="Reads">MPRIS, any player.</td><td data-label="Install"><code>playerctl</code></td></tr>
+            <tr><th scope="row">macOS</th><td data-label="Reads">Talks to Safari and Chrome-based browsers directly.
+              <ul class="browsers" aria-label="Supported browsers on macOS"><li>Safari</li><li>Chrome</li><li>Edge</li><li>Brave</li><li>Vivaldi</li><li>Opera</li></ul></td><td data-label="Install">One browser setting</td></tr>
+            <tr class="ext"><th scope="row">Extension</th><td data-label="Reads">Optional. Adds Firefox and sharper track info.</td><td data-label="Install">A browser extension</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section--l" id="how" aria-labelledby="how-title">
+      <div class="container">
+        <div class="head">
+          <h2 id="how-title">You always know what’s playing.</h2>
+          <p class="lead">See the title, artist and art the second a track starts, or take full control without leaving your desktop.</p>
+        </div>
+
+        <div class="switch" data-switch>
+          <div class="tabs" role="tablist" aria-label="The widget, step by step" hidden>
+            <button class="tab" type="button" role="tab" id="t-play" aria-controls="p-play" aria-selected="true">Play a song</button>
+            <button class="tab" type="button" role="tab" id="t-sync" aria-controls="p-sync" aria-selected="false" tabindex="-1">Vinylnyl syncs automatically</button>
+            <button class="tab" type="button" role="tab" id="t-ctrl" aria-controls="p-ctrl" aria-selected="false" tabindex="-1">Control from your desktop</button>
+          </div>
+
+          <div class="panel" role="tabpanel" id="p-play" aria-labelledby="t-play">
+            <div class="panel__text">
+              <h3>Play a song</h3>
+              <p>Open the app once. Until something plays, the record waits on your desktop.</p>
+            </div>
+            <figure class="stage stage--state">
+              <div class="shot" data-slot="state-idle" data-kind="product" data-alt="The widget waiting for music">
+                <img src="img/widget-idle.png" width="750" height="960" loading="lazy" alt="The widget waiting, with the line 지금 재생 중인 음악 under the record">
+              </div>
+              <figcaption><span class="readout">waiting for music</span></figcaption>
+            </figure>
+          </div>
+
+          <div class="panel" role="tabpanel" id="p-sync" aria-labelledby="t-sync">
+            <div class="panel__text">
+              <h3>Vinylnyl syncs automatically</h3>
+              <p>The track is detected with its title, artist and album art. Change the song and the record follows.</p>
+            </div>
+            <figure class="stage stage--state">
+              <div class="shot" data-slot="state-playing" data-kind="product" data-alt="The widget playing a song with album art on the label">
+                <img src="img/widget-playing-still.png" width="750" height="960" loading="lazy" alt="The widget playing High and Dry by Radiohead">
+              </div>
+              <figcaption><span class="readout">High and Dry by Radiohead</span></figcaption>
+            </figure>
+          </div>
+
+          <div class="panel" role="tabpanel" id="p-ctrl" aria-labelledby="t-ctrl">
+            <div class="panel__text">
+              <h3>Control from your desktop</h3>
+              <p>Previous, play and pause, next. No tab switching.</p>
+            </div>
+            <figure class="stage stage--state">
+              <div class="shot" data-slot="state-paused" data-kind="product" data-alt="The widget paused, its controls showing">
+                <img src="img/widget-paused.png" width="750" height="960" loading="lazy" alt="The widget paused, with previous, play and next buttons">
+              </div>
+              <figcaption><span class="readout">paused</span></figcaption>
+            </figure>
+          </div>
         </div>
       </div>
     </section>
-  </div>
 
-  <div class="ticker-wrap">
-    <div class="ticker">
-      <span>Mac · Windows · Linux</span><span>100% Local</span><span>Always-on-Top</span><span>No Account</span>
-      <span>No Cloud</span><span>Real Vinyl Spin</span><span>Menu Bar Control</span><span>Free Forever</span>
-      <span>Mac · Windows · Linux</span><span>100% Local</span><span>Always-on-Top</span><span>No Account</span>
-      <span>No Cloud</span><span>Real Vinyl Spin</span><span>Menu Bar Control</span><span>Free Forever</span>
-    </div>
-  </div>
-
-  <section class="section tight section-center" id="browsers">
-    <div class="section-tag">Compatibility</div>
-    <h2 class="section-title">Works right inside your browser.</h2>
-    <p class="section-desc">Vinylnyl reads the media controls your system already has, so on Windows and Linux it works with any player, no extension needed. On Mac it talks to Safari and Chrome-based browsers directly. An optional browser extension adds Firefox and sharper track info.</p>
-
-    <div class="browser-row">
-      <div class="browser-card">
-        <div class="browser-icon chrome-icon"></div>
-        <div class="browser-name">Chrome</div>
-        <div class="browser-status"><span class="dot-ok"></span>Supported</div>
-      </div>
-      <div class="browser-card">
-        <div class="browser-icon safari-icon">
-          <div class="safari-needle"></div>
+    <section class="section--l" id="features" aria-labelledby="features-title">
+      <div class="container">
+        <div class="head">
+          <h2 id="features-title">Built to feel like a real record.</h2>
+          <p class="lead">Every detail, from the spinning label to the tonearm-free disc, is tuned for the vibe, not just the function.</p>
         </div>
-        <div class="browser-name">Safari</div>
-        <div class="browser-status"><span class="dot-ok"></span>Supported</div>
-      </div>
-      <div class="browser-card">
-        <div class="browser-icon edge-icon"></div>
-        <div class="browser-name">Edge</div>
-        <div class="browser-status"><span class="dot-ok"></span>Supported</div>
-      </div>
-      <div class="browser-card">
-        <div class="browser-icon brave-icon"></div>
-        <div class="browser-name">Brave</div>
-        <div class="browser-status"><span class="dot-ok"></span>Supported</div>
-      </div>
-      <div class="browser-card">
-        <div class="browser-icon vivaldi-icon"></div>
-        <div class="browser-name">Vivaldi</div>
-        <div class="browser-status"><span class="dot-ok"></span>Supported</div>
-      </div>
-      <div class="browser-card">
-        <div class="browser-icon opera-icon"></div>
-        <div class="browser-name">Opera</div>
-        <div class="browser-status"><span class="dot-ok"></span>Supported</div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section tight" id="how">
-    <p class="section-desc" style="max-width:640px;font-size:18px;color:var(--text);">
-      With Vinylnyl, you always know what's playing. See the title, artist and art the second a track starts — or take
-      <span class="hl">full control</span> without ever leaving your desktop.
-    </p>
-
-    <div class="mini-grid">
-      <div class="mini-card">
-        <h4>Play a song</h4>
-        <div class="mini-preview">
-          <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#2fe08a" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M10 9l6 3-6 3z" fill="#2fe08a" stroke="none"/></svg>
-        </div>
-      </div>
-      <div class="mini-card">
-        <h4>Vinylnyl syncs automatically</h4>
-        <div class="mini-preview">
-          <div class="disc-stage" style="width:80px;height:80px;">
-            <div class="disc" style="animation-duration:5s;"><div class="disc-label"></div></div>
-            <div class="disc-spindle"></div>
-          </div>
-        </div>
-      </div>
-      <div class="mini-card">
-        <h4>Control from your desktop</h4>
-        <div class="mini-preview">
-          <div style="display:flex;gap:10px;">
-            <div class="c" style="width:34px;height:34px;background:rgba(255,255,255,0.08);border-radius:50%;display:flex;align-items:center;justify-content:center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="#fff"><path d="M6 6h2v12H6zM20 6L9 12l11 6z"/></svg></div>
-            <div class="c" style="width:34px;height:34px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="#0a0a0a"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg></div>
-            <div class="c" style="width:34px;height:34px;background:rgba(255,255,255,0.08);border-radius:50%;display:flex;align-items:center;justify-content:center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="#fff"><path d="M18 6h-2v12h2zM4 6l11 6L4 18z"/></svg></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="features">
-    <div class="section-tag">Features</div>
-    <h2 class="section-title">Built to feel like a real record.</h2>
-    <p class="section-desc">Every detail — from the spinning label to the tonearm-free disc — is tuned for the vibe, not just the function.</p>
-
-    <div class="feature-grid">
-      <div class="feature-card">
-        <h3>Real Vinyl Animation</h3>
-        <div class="fpad"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></span> A continuously spinning disc, not a static thumbnail.</div>
-      </div>
-      <div class="feature-card">
-        <h3>Any Browser, Any OS</h3>
-        <div class="fpad"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3.5 9.5h17M3.5 14.5h17"/></svg></span> Works with whatever is playing: YouTube, YouTube Music, Spotify and more.</div>
-      </div>
-      <div class="feature-card">
-        <h3>Always-on-Top Widget</h3>
-        <div class="fpad"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="5" width="16" height="12" rx="2"/><path d="M8 20h8"/></svg></span> A frameless floating window above every app, every space.</div>
-      </div>
-      <div class="feature-card">
-        <h3>Full Playback Control</h3>
-        <div class="fpad"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="5" width="4" height="14"/><path d="M13 5l7 7-7 7z" fill="currentColor" stroke="none"/></svg></span> Previous, play/pause and next — no tab-switching.</div>
-      </div>
-      <div class="feature-card">
-        <h3>Menu Bar Tray</h3>
-        <div class="fpad"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="6" width="18" height="4" rx="1.5"/><path d="M7 14h10M9 18h6"/></svg></span> Show, hide, reset position or quit from the menu bar.</div>
-      </div>
-      <div class="feature-card">
-        <h3>100% Local</h3>
-        <div class="fpad"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 118 0v3"/></svg></span> No server. The extension only talks to the app on 127.0.0.1.</div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section-center" id="privacy">
-    <p class="section-desc" style="font-size:20px;color:var(--text);max-width:640px;">
-      Vinylnyl offers a real desktop record player you can't find anywhere else.
-      And it's <span class="hl">completely free</span>, forever.
-    </p>
-
-    <div class="icon-trio">
-      <div>
-        <div class="badge">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v18M8 7l-4 4 4 4M16 7l4 4-4 4" stroke="none"/><circle cx="12" cy="12" r="9"/><path d="M9 9l6 3-6 3z" fill="currentColor" stroke="none"/></svg>
-        </div>
-        <div class="cap">A real spinning vinyl, grooves and all — tuned for the vibe.</div>
-      </div>
-      <div>
-        <div class="badge">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 118 0v3"/></svg>
-        </div>
-        <div class="cap">No account, no login screen. Open the app and it just works.</div>
-      </div>
-      <div>
-        <div class="badge">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 15a4 4 0 010-8 5 5 0 019.6-1.5A4.5 4.5 0 0119 15H4z"/><line x1="4" y1="4" x2="20" y2="20"/></svg>
-        </div>
-        <div class="cap">Zero cloud dependency — everything stays on your own computer.</div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-tag">Live example</div>
-    <h2 class="section-title">What it looks like, live.</h2>
-    <p class="section-desc">This is the actual widget. No mockup screenshots — just a record spinning on your desktop.</p>
-
-    <div class="live-window">
-      <div class="live-titlebar">
-        <span class="mac-dot r"></span><span class="mac-dot y"></span><span class="mac-dot g"></span>
-        <span class="mac-title">Vinylnyl</span>
-      </div>
-      <div class="live-body">
-        <div class="live-side">
-          <div class="widget-mock">
-            <div class="disc-stage" style="width:150px;height:150px;">
-              <div class="disc-shadow-el" style="width:150px;height:150px;"></div>
-              <div class="disc" style="animation-duration:6s;"><div class="disc-label"></div></div>
-              <div class="disc-spindle"></div>
-            </div>
-            <div class="now-title" style="margin-top:14px;">High and Dry</div>
-            <div class="now-artist">Radiohead</div>
-          </div>
-        </div>
-        <div class="live-info">
-          <div class="live-row"><span class="src">YouTube · Chrome</span><span class="time">00:41</span></div>
-          <div class="live-row"><span class="src">Track detected<span class="tag">title + artist</span></span><span class="time">now</span></div>
-          <div class="live-row"><span class="src">Thumbnail synced<span class="tag">album art</span></span><span class="time">now</span></div>
-          <div class="live-row"><span class="src">Widget position<span class="tag">saved &amp; restored</span></span><span class="time">on launch</span></div>
-          <div class="live-row"><span class="src">Playback control<span class="tag">prev · play/pause · next</span></span><span class="time">instant</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="footer-cta-outer">
-    <section class="footer-cta" id="download">
-      <div class="footer-cta-inner">
-        <h2>Download Vinylnyl</h2>
-        <p>Free for macOS, Windows and Linux.</p>
-        <div class="cta-row" style="justify-content:center;">
-          <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/Vinylnyl.dmg" class="btn btn-primary btn-lg">macOS</a>
-          <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/Vinylnyl-Setup.exe" class="btn btn-primary btn-lg">Windows</a>
-          <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/Vinylnyl.AppImage" class="btn btn-primary btn-lg">Linux</a>
-        </div>
-        <div class="req">macOS 12+ (Apple Silicon &amp; Intel) · Windows 10+ · Linux (AppImage)</div>
-
-        <details class="trust-note" open>
-          <summary>Setup: just open the app</summary>
-          <p>
-            <strong>Windows:</strong> nothing else to install — play something and the widget picks it up.<br/>
-            <strong>macOS:</strong> works with Safari and Chrome-based browsers once you enable
-            <em>"Allow JavaScript from Apple Events"</em> in the browser's Develop menu (see the README).<br/>
-            <strong>Linux:</strong> install <code style="display:inline;padding:2px 6px;">playerctl</code> (e.g. <code style="display:inline;padding:2px 6px;">sudo apt install playerctl</code>).
-          </p>
-        </details>
-
-        <details class="trust-note">
-          <summary>Optional: browser extension (Firefox, sharper info)</summary>
-          <p>
-            The extension also covers Firefox and any case the system media controls miss. Download
-            <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/vinylnyl-extension.zip" style="color:var(--green);">vinylnyl-extension.zip</a>, unzip it, open
-            <strong>chrome://extensions</strong> (or edge://, brave://), turn on <strong>Developer mode</strong> and click
-            <strong>Load unpacked</strong>. On Firefox use the
-            <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/vinylnyl-extension-firefox.zip" style="color:var(--green);">Firefox build</a> with
-            <strong>about:debugging → Load Temporary Add-on</strong>.
-          </p>
-        </details>
-
-        <details class="trust-note">
-          <summary>Seeing an "unidentified developer" / SmartScreen warning?</summary>
-          <p>
-            Vinylnyl isn't code-signed yet, so your OS may warn you the first time you open it.
-            <strong>macOS:</strong> open the app once, then go to System Settings → Privacy &amp; Security and click <strong>"Open Anyway"</strong>
-            (or run the command below in Terminal).
-            <strong>Windows:</strong> click <strong>More info → Run anyway</strong>.
-          </p>
-          <code>xattr -cr /Applications/Vinylnyl.app</code>
-        </details>
-
-        <div class="swatch-row">
-          <div class="swatch s1"></div>
-          <div class="swatch s2"></div>
-          <div class="swatch s3"></div>
-          <div class="swatch s4"></div>
-          <div class="swatch s5"></div>
-        </div>
+        <dl class="rows">
+          <div><dt>Real vinyl animation</dt><dd>A continuously spinning disc, grooves and all, not a static thumbnail.</dd></div>
+          <div><dt>Any player, any OS</dt><dd>Works with whatever is playing: YouTube, YouTube Music, Spotify and more, on Mac, Windows and Linux.</dd></div>
+          <div><dt>Always on top</dt><dd>A frameless floating window above every app and every space. Its position is saved and restored on launch.</dd></div>
+          <div><dt>Full playback control</dt><dd>Previous, play and pause, and next, right on the record.</dd></div>
+          <div><dt>Menu bar tray</dt><dd>Show, hide, reset its position or quit from the menu bar.</dd></div>
+        </dl>
       </div>
     </section>
-  </div>
 
-  <footer class="site-footer">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="brand"><span class="brand-disc"></span>Vinylnyl</div>
-        <p>A desktop widget that turns whatever you're listening to into a spinning vinyl record — on Mac, Windows and Linux.</p>
+    <section class="section--l" id="privacy" aria-labelledby="privacy-title">
+      <div class="container split">
+        <div class="split__text">
+          <h2 id="privacy-title">Completely free, forever.</h2>
+          <p>A real desktop record player you can’t find anywhere else, and everything stays on your own computer.</p>
+        </div>
+        <dl class="well facts">
+          <div><dt>price</dt><dd><span class="figure-big">free</span></dd></div>
+          <div><dt>account</dt><dd>None. No login screen: open the app and it just works.</dd></div>
+          <div><dt>cloud</dt><dd>None. No server, zero cloud dependency.<span class="readout">the extension only talks to the app on 127.0.0.1</span></dd></div>
+        </dl>
       </div>
-      <div class="footer-col">
-        <h5>Product</h5>
+    </section>
+
+    <section class="close" id="download" aria-labelledby="download-title">
+      <div class="container split">
+        <div class="split__text">
+          <h2 id="download-title">Download Vinylnyl</h2>
+          <p>Free for macOS, Windows and Linux.</p>
+          <div class="get__row">
+            <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/Vinylnyl.dmg" class="btn btn--primary">macOS</a>
+            <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/Vinylnyl-Setup.exe" class="btn">Windows</a>
+            <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/Vinylnyl.AppImage" class="btn">Linux</a>
+          </div>
+          <p class="readout muted">macOS 12+ (Apple Silicon and Intel), Windows 10+, Linux (AppImage)</p>
+
+          <div class="setup">
+            <details open>
+              <summary>Setup: just open the app</summary>
+              <div class="body">
+                <p><strong>Windows:</strong> nothing else to install. Play something and the widget picks it up.</p>
+                <p><strong>macOS:</strong> works with Safari and Chrome-based browsers once you turn on “Allow JavaScript from Apple Events” in the browser’s Develop menu (see the README).</p>
+                <p><strong>Linux:</strong> install <code>playerctl</code>, for example <code>sudo apt install playerctl</code>.</p>
+              </div>
+            </details>
+            <details>
+              <summary>Optional: browser extension (Firefox, sharper info)</summary>
+              <div class="body">
+                <p>The extension also covers Firefox and any case the system media controls miss. Download <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/vinylnyl-extension.zip">vinylnyl-extension.zip</a>, unzip it, open <strong>chrome://extensions</strong> (or edge://, brave://), turn on <strong>Developer mode</strong> and click <strong>Load unpacked</strong>.</p>
+                <p>On Firefox use the <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/vinylnyl-extension-firefox.zip">Firefox build</a> with <strong>about:debugging</strong>, then <strong>Load Temporary Add-on</strong>.</p>
+              </div>
+            </details>
+            <details>
+              <summary>Seeing an “unidentified developer” or SmartScreen warning?</summary>
+              <div class="body">
+                <p>Vinylnyl isn’t code-signed yet, so your OS may warn you the first time you open it.</p>
+                <p><strong>macOS:</strong> open the app once, then go to System Settings, Privacy &amp; Security and click <strong>“Open Anyway”</strong>, or run <code>xattr -cr /Applications/Vinylnyl.app</code> in Terminal.</p>
+                <p><strong>Windows:</strong> click <strong>More info</strong>, then <strong>Run anyway</strong>.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <figure class="stage stage--close">
+          <div class="shot" data-slot="close" data-kind="product" data-alt="The widget on a desktop, playing">
+            <img src="img/widget-playing-still.png" width="750" height="960" loading="lazy" alt="">
+          </div>
+          <figcaption><span class="readout">the widget, as it ships</span></figcaption>
+        </figure>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="container">
+      <div class="foot__sign">
+        <p>Made for the vibe.</p>
+        <small>A desktop widget that turns whatever you’re listening to into a spinning vinyl record, on Mac, Windows and Linux. © 2026 Vinylnyl</small>
+      </div>
+      <nav class="foot__links" aria-label="Footer">
         <a href="#how">How it works</a>
         <a href="#features">Features</a>
         <a href="#privacy">Privacy</a>
-      </div>
-      <div class="footer-col">
-        <h5>Resources</h5>
         <a href="https://github.com/scrawl-labs/vinylnyl">GitHub</a>
-        <a href="https://github.com/scrawl-labs/vinylnyl/releases">Release Notes</a>
-      </div>
-      <div class="footer-col">
-        <h5>Legal</h5>
-        <a href="#privacy">Privacy Policy</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <div>© 2026 Vinylnyl</div>
-      <div>Made for the vibe.</div>
+        <a href="https://github.com/scrawl-labs/vinylnyl/releases">Release notes</a>
+      </nav>
     </div>
   </footer>
 
+<script>
+document.documentElement.classList.add('js');
+document.querySelectorAll('[data-switch]').forEach((root) => {
+  const list = root.querySelector('[role="tablist"]');
+  const tabs = [...list.querySelectorAll('[role="tab"]')];
+  const select = (tab) => {
+    tabs.forEach((t) => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', on);
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    });
+  };
+  list.hidden = false;
+  select(tabs[0]);
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => select(t));
+    t.addEventListener('keydown', (e) => {
+      const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) return;
+      const next = tabs[(i + d + tabs.length) % tabs.length];
+      select(next); next.focus();
+    });
+  });
+});
+</script>
+<script>window.hallmarkSlots = (m) => { for (const [k, v] of Object.entries(m)) { const s = document.querySelector(`[data-slot="${k}"]`); if (!s) continue; const im = new Image(); im.src = typeof v === 'string' ? v : v.src; im.alt = (typeof v === 'object' && v.alt) || s.dataset.alt || ''; s.querySelectorAll(':scope > img').forEach((o) => o.remove()); s.prepend(im); } };
+document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>
 </body>
 </html>
