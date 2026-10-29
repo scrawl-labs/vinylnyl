@@ -4,25 +4,27 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Vinylnyl: whatever is playing, as a spinning record</title>
-<meta name="description" content="지금 재생 중인 음악을 진짜 돌아가는 레코드판 위젯으로 보여주는 macOS · Windows · Linux 앱. YouTube, YouTube Music, Spotify 등 어떤 플레이어든. 100% 로컬, 계정 없음, 클라우드 없음." />
+<meta name="description" content="A desktop widget for macOS, Windows and Linux that shows whatever is playing (YouTube, YouTube Music, Spotify and more) as a spinning vinyl record. Free, 100% local, no account, no cloud." />
 <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Geist:wght@400;500&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gloock&family=Hanken+Grotesk:wght@400;500&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
 /* Hallmark · shape: Split Studio · genre: atmospheric · theme: Lumen (deal 2/3, seed free-desktop-widget-shows-80fe·78b9b1d3·2026-10-29·r0) · redesign: full · draw: d2f92b
  * hero: Counter (swapped from Banner: the download and the widget are the first screen) · nav: edge-aligned · footer: letter close · imagery: screenshots 4 (the widget renderer, captured) · signature: the real widget, captured from the app and set at full size beside the download
- * axes: dark/roman-serif/warm · posture: restrained · contrast: pass · fold: pass · brand: the amber accent and the disc icon kept · v2.0.0 */
+ * faces: Gloock over Hanken Grotesk (by request: the user asked for a prettier face; Lumen's Instrument Serif and lowercase heads replaced) · motion: the hero record spins on a loop (by request), with a pause control
+ * axes: dark/high-contrast-serif/warm · posture: restrained · contrast: pass · fold: pass · brand: the amber accent and the disc icon kept · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V4 · weakest: P and S, the kept headline has no verb, so the page argues through the real widget states instead of a slogan */
 /* Hallmark · dropped the ticker, the swatch row, the drawn browser icons and the drawn mac windows · decoration and drawn chrome (47a, 80) */
 /* Hallmark · dropped "Detected in <1s" · an unmeasured metric (46a) */
 /* Hallmark · dropped the "What it looks like, live." log panel and its sample times (00:41) · a drawn window (47a); its facts (title and artist, album art, position restored on launch, playback control) moved into the switcher and the feature rows */
 /* Hallmark · reworded "Works right inside your browser." to "Works with what you already play." · the old head no longer matched what the section says (it reads system media first) */
-/* Hallmark · reworded the feature titles to lowercase rows ("Any Browser, Any OS" to "Any player, any OS", "Always-on-Top Widget" to "Always on top") and folded "100% Local" into the privacy readouts · Lumen sets heads lowercase; one fact, one place */
+/* Hallmark · reworded the feature titles to sentence-case rows ("Any Browser, Any OS" to "Any player, any OS", "Always-on-Top Widget" to "Always on top") and folded "100% Local" into the privacy readouts · one fact, one place */
 /* Hallmark · waive 59 · the close and the footer stand 240px apart on screen · the measure counts the hidden bodies of the closed setup disclosures */
 /* Hallmark · waive 77 · the systems section holds a four-row table on seven columns beside its head · a table of the real systems is the section's mass, a picture would only repeat the hero */
-/* Hallmark · reworded "Real Vinyl Animation", "Full Playback Control" and "Menu Bar Tray" to sentence case · Lumen sets heads lowercase, the words are unchanged */
+/* Hallmark · reworded "Real Vinyl Animation", "Full Playback Control" and "Menu Bar Tray" to sentence case · the words are unchanged, only the case */
+/* Hallmark · dropped the idle widget capture · it showed Korean UI text and the page is English by request */
 /* Hallmark · reworded the hero line, the section intros and the setup notes because they carried em dashes and middle-dot strings · 19, 63 */
 @import url("./tokens.css");
 @import url("./base.css");
@@ -30,12 +32,12 @@
 :root {
   /* brand amber kept from the old page, on Lumen's lightness */
   --color-accent: oklch(80% 0.15 75); --color-accent-hover: oklch(86% 0.13 75); --color-focus: oklch(80% 0.15 75);
+  --spin: 5.5s;
   --nav-h: 72px;
 }
 body { font-variant-numeric: tabular-nums; }
-h1, h2, h3, nav, .btn, figcaption, .tab, .label { text-transform: lowercase; }
-h2 { font-size: var(--text-display-s); line-height: 0.98; }
-h1 { line-height: 0.96; font-size: clamp(3rem, 5.4vw + 0.5rem, 5.75rem); max-width: 11ch; }
+h2 { font-size: var(--text-display-s); line-height: 1; }
+h1 { line-height: 0.98; font-size: clamp(2.75rem, 4.6vw + 0.5rem, 5rem); max-width: 12ch; }
 .lead { color: var(--color-ink-2); }
 .muted { color: var(--color-muted); }
 .readout { font: 400 var(--text-xs)/1.5 var(--font-outlier); color: var(--color-ink-2); }
@@ -60,7 +62,7 @@ a:active { color: var(--color-ink-2); }
 .skip:focus-visible { top: var(--space-md); }
 .nav { position: sticky; top: 0; z-index: var(--z-sticky-nav); background: var(--color-paper); border-bottom: var(--rule-hair) solid var(--color-rule); }
 .nav .container { height: var(--nav-h); display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg); }
-.wordmark { display: inline-flex; align-items: center; gap: var(--space-xs); font: 400 var(--text-xl)/1 var(--font-display); letter-spacing: var(--tracking-display); text-decoration: none; text-transform: lowercase; }
+.wordmark { display: inline-flex; align-items: center; gap: var(--space-xs); font: 400 var(--text-xl)/1 var(--font-display); letter-spacing: var(--tracking-display); text-decoration: none; }
 .wordmark img { width: 28px; height: 28px; border-radius: 7px; }
 .nav__right { display: flex; align-items: center; gap: var(--space-lg); }
 .nav__links { display: flex; gap: var(--space-lg); font-size: var(--text-sm); color: var(--color-ink-2); }
@@ -76,6 +78,19 @@ a:active { color: var(--color-ink-2); }
 
 .stage { position: relative; margin: 0; border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); background-color: var(--color-paper-2); background-image: linear-gradient(var(--rule-blueprint) 1px, transparent 1px), linear-gradient(90deg, var(--rule-blueprint) 1px, transparent 1px); background-size: 48px 48px; background-position: -1px -1px; }
 .stage--hero { aspect-ratio: 5 / 4; min-height: 520px; }
+.deck { position: relative; height: 100%; aspect-ratio: 250 / 320; max-width: 100%; margin-inline: auto; }
+.deck > img { position: absolute; }
+.deck__base { inset: 0; width: 100%; height: 100%; }
+.deck__disc { left: 14.8%; top: 5.625%; width: 70.4%; height: 55%; }
+@keyframes spin { to { transform: rotate(1turn); } }
+[data-loop] .deck__disc { animation: spin var(--spin) linear infinite; }
+[data-loop]:not(.is-running) .deck__disc { animation-play-state: paused; }
+.loop-toggle { font: 400 var(--text-xs)/1 var(--font-outlier); color: var(--color-ink-2); background: transparent; border: 0; padding: var(--space-2xs) 0; cursor: pointer; text-decoration: underline; text-decoration-color: var(--color-rule-2); text-underline-offset: 0.2em; transition: color var(--dur-short) var(--ease-out); }
+.loop-toggle:hover { color: var(--color-ink); text-decoration-color: var(--color-accent); }
+.loop-toggle:active { color: var(--color-muted); }
+.loop-toggle:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+html:not(.js) .loop-toggle { display: none; }
+@media (prefers-reduced-motion: reduce) { .loop-toggle { display: none; } }
 .stage figcaption { position: absolute; left: var(--space-lg); bottom: var(--space-md); right: var(--space-lg); display: flex; justify-content: space-between; gap: var(--space-md); }
 
 /* captured product: no photo treatment, never cropped */
@@ -97,7 +112,7 @@ a:active { color: var(--color-ink-2); }
 .reads caption { text-align: left; padding-bottom: var(--space-sm); }
 .reads th, .reads td { text-align: left; vertical-align: top; padding: var(--space-md) var(--space-md) var(--space-md) 0; border-top: var(--rule-hair) solid var(--color-rule); }
 .reads thead th { border-top: 0; font: 400 var(--text-sm)/1.4 var(--font-body); color: var(--color-muted); padding-block: 0 var(--space-sm); white-space: nowrap; }
-.reads tbody th { font: 400 var(--text-title)/1.1 var(--font-display); text-transform: lowercase; width: 22%; }
+.reads tbody th { font: 400 var(--text-title)/1.1 var(--font-display); width: 22%; }
 .reads td { color: var(--color-ink-2); }
 .reads td + td { width: 30%; }
 .reads tr.ext th, .reads tr.ext td { color: var(--color-muted); }
@@ -124,7 +139,7 @@ a:active { color: var(--color-ink-2); }
 .rows { margin: var(--space-2xl) 0 0; display: grid; }
 .rows > div { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); padding-block: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule); align-items: baseline; }
 .rows > div:last-child { border-bottom: var(--rule-hair) solid var(--color-rule); }
-.rows dt { font: 400 var(--text-title)/1.15 var(--font-display); text-transform: lowercase; }
+.rows dt { font: 400 var(--text-title)/1.15 var(--font-display); }
 .rows dd { margin: 0; color: var(--color-ink-2); max-width: 52ch; }
 .head { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); align-items: end; }
 .head .lead { max-width: 44ch; }
@@ -135,10 +150,10 @@ a:active { color: var(--color-ink-2); }
 .facts > div { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 5fr); gap: var(--space-lg); padding-block: var(--space-md); border-top: var(--rule-hair) solid var(--color-rule); }
 .facts > div:first-child { border-top: 0; padding-top: 0; }
 .facts > div:last-child { padding-bottom: 0; }
-.facts dt { font: 400 var(--text-xs)/1.6 var(--font-outlier); color: var(--color-muted); text-transform: lowercase; }
+.facts dt { font: 400 var(--text-xs)/1.6 var(--font-outlier); color: var(--color-muted); }
 .facts dd { margin: 0; color: var(--color-ink); }
 .facts dd .readout { display: block; margin-top: var(--space-2xs); color: var(--color-ink-2); }
-.figure-big { font: 400 clamp(4rem, 8vw, 7.5rem)/0.9 var(--font-display); letter-spacing: var(--tracking-display); text-transform: lowercase; }
+.figure-big { font: 400 clamp(4rem, 8vw, 7.5rem)/0.9 var(--font-display); letter-spacing: var(--tracking-display); }
 
 /* close */
 .close { padding-block: var(--section-gap-l) var(--section-gap-s); }
@@ -161,7 +176,7 @@ a:active { color: var(--color-ink-2); }
 .foot { border-top: var(--rule-hair) solid var(--color-rule); padding-block: var(--section-gap-s) var(--space-xl); }
 .foot .container { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); align-items: end; }
 .foot__sign { display: grid; gap: var(--space-sm); }
-.foot__sign p { font: 400 var(--text-2xl)/1.1 var(--font-display); max-width: 28ch; text-transform: lowercase; }
+.foot__sign p { font: 400 var(--text-2xl)/1.1 var(--font-display); max-width: 28ch; }
 .foot__links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-sm) var(--space-lg); font-size: var(--text-sm); color: var(--color-ink-2); }
 .foot__links a:hover { color: var(--color-ink); }
 .foot small { font-size: var(--text-sm); color: var(--color-muted); }
@@ -220,10 +235,13 @@ a:active { color: var(--color-ink-2); }
         </div>
 
         <figure class="stage stage--hero">
-          <div class="shot" data-slot="hero" data-kind="product" data-alt="The widget floating on a desktop, playing a song with its album art on the label">
-            <img src="img/widget-playing.png" width="750" height="960" alt="The Vinylnyl widget: a black record, the song love. by wave to earth beneath it, and previous, pause and next buttons" fetchpriority="high">
+          <div class="shot" data-loop>
+            <div class="deck">
+              <img class="deck__base" src="img/hero-base.png" width="750" height="960" alt="The Vinylnyl widget playing love. by wave to earth" fetchpriority="high">
+              <img class="deck__disc" src="img/hero-disc.png" width="528" height="528" alt="">
+            </div>
           </div>
-          <figcaption><span class="readout">love. by wave to earth</span><span class="readout">captured from the app</span></figcaption>
+          <figcaption><span class="readout">love. by wave to earth</span><button class="loop-toggle" type="button" data-loop-toggle>Pause</button></figcaption>
         </figure>
       </div>
     </section>
@@ -265,13 +283,13 @@ a:active { color: var(--color-ink-2); }
           <div class="panel" role="tabpanel" id="p-play" aria-labelledby="t-play">
             <div class="panel__text">
               <h3>Play a song</h3>
-              <p>Open the app once. Until something plays, the record waits on your desktop.</p>
+              <p>Open the app, then play something in your browser or player. The record picks it up.</p>
             </div>
             <figure class="stage stage--state">
-              <div class="shot" data-slot="state-idle" data-kind="product" data-alt="The widget waiting for music">
-                <img src="img/widget-idle.png" width="750" height="960" loading="lazy" alt="The widget waiting, with the line 지금 재생 중인 음악 under the record">
+              <div class="shot" data-slot="state-play" data-kind="product" data-alt="The widget playing a song with album art on the label">
+                <img src="img/widget-playing.png" width="750" height="960" loading="lazy" alt="The widget playing love. by wave to earth">
               </div>
-              <figcaption><span class="readout">waiting for music</span></figcaption>
+              <figcaption><span class="readout">Now playing</span></figcaption>
             </figure>
           </div>
 
@@ -297,7 +315,7 @@ a:active { color: var(--color-ink-2); }
               <div class="shot" data-slot="state-paused" data-kind="product" data-alt="The widget paused, its controls showing">
                 <img src="img/widget-paused.png" width="750" height="960" loading="lazy" alt="The widget paused, with previous, play and next buttons">
               </div>
-              <figcaption><span class="readout">paused</span></figcaption>
+              <figcaption><span class="readout">Paused</span></figcaption>
             </figure>
           </div>
         </div>
@@ -327,9 +345,9 @@ a:active { color: var(--color-ink-2); }
           <p>A real desktop record player you can’t find anywhere else, and everything stays on your own computer.</p>
         </div>
         <dl class="well facts">
-          <div><dt>price</dt><dd><span class="figure-big">free</span></dd></div>
-          <div><dt>account</dt><dd>None. No login screen: open the app and it just works.</dd></div>
-          <div><dt>cloud</dt><dd>None. No server, zero cloud dependency.<span class="readout">the extension only talks to the app on 127.0.0.1</span></dd></div>
+          <div><dt>Price</dt><dd><span class="figure-big">Free</span></dd></div>
+          <div><dt>Account</dt><dd>None. No login screen: open the app and it just works.</dd></div>
+          <div><dt>Cloud</dt><dd>None. No server, zero cloud dependency.<span class="readout">The extension only talks to the app on 127.0.0.1</span></dd></div>
         </dl>
       </div>
     </section>
@@ -377,7 +395,7 @@ a:active { color: var(--color-ink-2); }
           <div class="shot" data-slot="close" data-kind="product" data-alt="The widget on a desktop, playing">
             <img src="img/widget-playing-still.png" width="750" height="960" loading="lazy" alt="">
           </div>
-          <figcaption><span class="readout">the widget, as it ships</span></figcaption>
+          <figcaption><span class="readout">The widget, as it ships</span></figcaption>
         </figure>
       </div>
     </section>
@@ -401,6 +419,13 @@ a:active { color: var(--color-ink-2); }
 
 <script>
 document.documentElement.classList.add('js');
+document.querySelectorAll('[data-loop]').forEach((el) => {
+  const btn = el.parentElement.querySelector('[data-loop-toggle]');
+  const s = { seen: false, held: matchMedia('(prefers-reduced-motion: reduce)').matches };
+  const sync = () => { el.classList.toggle('is-running', s.seen && !s.held); btn.textContent = s.held ? 'Play' : 'Pause'; };
+  btn.addEventListener('click', () => { s.held = !s.held; sync(); });
+  new IntersectionObserver(([e]) => { s.seen = e.isIntersecting; sync(); }).observe(el);
+});
 document.querySelectorAll('[data-switch]').forEach((root) => {
   const list = root.querySelector('[role="tablist"]');
   const tabs = [...list.querySelectorAll('[role="tab"]')];
