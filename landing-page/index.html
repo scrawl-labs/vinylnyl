@@ -76,12 +76,14 @@ a:active { color: var(--color-ink-2); }
 .get__row { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
 .get .readout { color: var(--color-muted); }
 
-.stage { position: relative; margin: 0; border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); background-color: var(--color-paper-2); background-image: linear-gradient(var(--rule-blueprint) 1px, transparent 1px), linear-gradient(90deg, var(--rule-blueprint) 1px, transparent 1px); background-size: 48px 48px; background-position: -1px -1px; }
-.stage--hero { aspect-ratio: 5 / 4; min-height: 520px; }
-.deck { position: relative; height: 100%; aspect-ratio: 250 / 320; max-width: 100%; margin-inline: auto; }
+/* captures float on the page itself, the way the widget floats on a desktop: no frame, no grid */
+.stage { position: relative; margin: 0; }
+.stage--hero { height: min(calc(100svh - var(--nav-h) - var(--space-3xl)), 720px); min-height: 520px; }
+/* the base capture is cropped to the record and its title (the dock area below is empty at rest) */
+.deck { position: relative; height: 100%; aspect-ratio: 250 / 260; max-width: 100%; margin-inline: auto; }
 .deck > img { position: absolute; }
-.deck__base { inset: 0; width: 100%; height: 100%; }
-.deck__disc { left: 14.8%; top: 5.625%; width: 70.4%; height: 55%; }
+.deck__base { inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.deck__disc { left: 14.8%; top: 6.923%; width: 70.4%; height: 67.69%; }
 @keyframes spin { to { transform: rotate(1turn); } }
 [data-loop] .deck__disc { animation: spin var(--spin) linear infinite; }
 [data-loop]:not(.is-running) .deck__disc { animation-play-state: paused; }
@@ -91,14 +93,14 @@ a:active { color: var(--color-ink-2); }
 .loop-toggle:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
 html:not(.js) .loop-toggle { display: none; }
 @media (prefers-reduced-motion: reduce) { .loop-toggle { display: none; } }
-.stage figcaption { position: absolute; left: var(--space-lg); bottom: var(--space-md); right: var(--space-lg); display: flex; justify-content: space-between; gap: var(--space-md); }
+.stage figcaption { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; gap: var(--space-lg); }
 
 /* captured product: no photo treatment, never cropped */
 [data-kind="product"] { background: transparent; }
 [data-kind="product"]:has(> img) { background: transparent; outline: 0; isolation: auto; }
 [data-kind="product"]:has(> img)::before { content: none; }
 [data-kind="product"] > img { filter: none; mix-blend-mode: normal; object-fit: contain; }
-.shot { position: absolute; inset: var(--space-lg) var(--space-lg) var(--space-2xl); }
+.shot { position: absolute; inset: 0 0 var(--space-xl); }
 
 /* sections */
 .section { padding-block: var(--section-gap) 0; }
@@ -132,7 +134,7 @@ html:not(.js) .loop-toggle { display: none; }
 .panel__text { display: grid; gap: var(--space-sm); }
 .panel__text h3 { font-size: var(--text-xl); font-weight: 500; letter-spacing: -0.01em; }
 .panel__text p { color: var(--color-ink-2); max-width: 40ch; }
-.stage--state { aspect-ratio: 16 / 10; min-height: 440px; }
+.stage--state { height: 560px; }
 .switch { display: grid; gap: var(--space-xl); margin-top: var(--space-2xl); }
 
 /* features: rows */
@@ -158,7 +160,7 @@ html:not(.js) .loop-toggle { display: none; }
 /* close */
 .close { padding-block: var(--section-gap-l) var(--section-gap-s); }
 .close .split { align-items: center; }
-.stage--close { aspect-ratio: 4 / 5; min-height: 480px; max-height: 640px; justify-self: end; width: min(100%, 520px); }
+.stage--close { height: 600px; width: 100%; }
 .setup { display: grid; margin-top: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule); }
 .setup details { border-bottom: var(--rule-hair) solid var(--color-rule); }
 .setup summary { min-height: 52px; display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); cursor: pointer; list-style: none; color: var(--color-ink); }
@@ -184,8 +186,7 @@ html:not(.js) .loop-toggle { display: none; }
 @media (max-width: 60rem) {
   .hero .container, .split, .panel, .head, .rows > div, .foot .container { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
   .hero .container { min-height: 0; padding-block: var(--space-2xl); }
-  .stage--hero, .stage--state { min-height: 0; aspect-ratio: 4 / 5; }
-  .stage--close { justify-self: stretch; width: 100%; min-height: 0; }
+  .stage--hero, .stage--state, .stage--close { min-height: 0; height: auto; aspect-ratio: 250 / 360; max-height: 80svh; }
   .rows > div { gap: var(--space-xs); }
   .nav__links { display: none; }
   .foot__links { justify-content: flex-start; }
@@ -197,8 +198,6 @@ html:not(.js) .loop-toggle { display: none; }
   .facts > div { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); }
 }
 @media (max-width: 40rem) {
-  .shot { inset: var(--space-lg) var(--space-lg) var(--space-3xl); }
-  .stage figcaption .readout + .readout { display: none; }
 }
 </style>
 </head>
@@ -241,7 +240,7 @@ html:not(.js) .loop-toggle { display: none; }
               <img class="deck__disc" src="img/hero-disc.png" width="528" height="528" alt="">
             </div>
           </div>
-          <figcaption><span class="readout">love. by wave to earth</span><button class="loop-toggle" type="button" data-loop-toggle>Pause</button></figcaption>
+          <figcaption><button class="loop-toggle" type="button" data-loop-toggle>Pause</button></figcaption>
         </figure>
       </div>
     </section>
