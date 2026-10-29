@@ -9,12 +9,12 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gloock&family=Hanken+Grotesk:wght@400;500&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;800&family=Martian+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
 /* Hallmark · shape: Split Studio · genre: atmospheric · theme: Lumen (deal 2/3, seed free-desktop-widget-shows-80fe·78b9b1d3·2026-10-29·r0) · redesign: full · draw: d2f92b
  * hero: Counter (swapped from Banner: the download and the widget are the first screen) · nav: edge-aligned · footer: letter close · imagery: screenshots 4 (the widget renderer, captured) · signature: the real widget, captured from the app and set at full size beside the download
- * faces: Gloock over Hanken Grotesk (by request: the user asked for a prettier face; Lumen's Instrument Serif and lowercase heads replaced) · motion: the hero record spins on a loop (by request), with a pause control
- * axes: dark/high-contrast-serif/warm · posture: restrained · contrast: pass · fold: pass · brand: the amber accent and the disc icon kept · v2.0.0 */
+ * faces: Schibsted Grotesk 800 over Schibsted Grotesk, Martian Mono for readouts (by request: the user's own faces from kiln) · motion: the hero record spins on a loop (by request), with a pause control
+ * axes: dark/grotesk-sans/warm · posture: restrained · contrast: pass · fold: pass · brand: the amber accent and the disc icon kept · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V4 · weakest: P and S, the kept headline has no verb, so the page argues through the real widget states instead of a slogan */
 /* Hallmark · dropped the ticker, the swatch row, the drawn browser icons and the drawn mac windows · decoration and drawn chrome (47a, 80) */
 /* Hallmark · dropped "Detected in <1s" · an unmeasured metric (46a) */
@@ -35,7 +35,7 @@
   --spin: 5.5s;
   --nav-h: 72px;
 }
-body { font-variant-numeric: tabular-nums; }
+.readout { font-variant-numeric: tabular-nums; }
 h2 { font-size: var(--text-display-s); line-height: 1; }
 h1 { line-height: 0.98; font-size: clamp(2.75rem, 4.6vw + 0.5rem, 5rem); max-width: 12ch; }
 .lead { color: var(--color-ink-2); }
@@ -62,7 +62,7 @@ a:active { color: var(--color-ink-2); }
 .skip:focus-visible { top: var(--space-md); }
 .nav { position: sticky; top: 0; z-index: var(--z-sticky-nav); background: var(--color-paper); border-bottom: var(--rule-hair) solid var(--color-rule); }
 .nav .container { height: var(--nav-h); display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg); }
-.wordmark { display: inline-flex; align-items: center; gap: var(--space-xs); font: 400 var(--text-xl)/1 var(--font-display); letter-spacing: var(--tracking-display); text-decoration: none; }
+.wordmark { display: inline-flex; align-items: center; gap: var(--space-xs); font: var(--display-weight) var(--text-xl)/1 var(--font-display); letter-spacing: var(--tracking-display); text-decoration: none; }
 .wordmark img { width: 28px; height: 28px; border-radius: 7px; }
 .nav__right { display: flex; align-items: center; gap: var(--space-lg); }
 .nav__links { display: flex; gap: var(--space-lg); font-size: var(--text-sm); color: var(--color-ink-2); }
@@ -112,7 +112,7 @@ html:not(.js) .loop-toggle { display: none; }
 .reads caption { text-align: left; padding-bottom: var(--space-sm); }
 .reads th, .reads td { text-align: left; vertical-align: top; padding: var(--space-md) var(--space-md) var(--space-md) 0; border-top: var(--rule-hair) solid var(--color-rule); }
 .reads thead th { border-top: 0; font: 400 var(--text-sm)/1.4 var(--font-body); color: var(--color-muted); padding-block: 0 var(--space-sm); white-space: nowrap; }
-.reads tbody th { font: 400 var(--text-title)/1.1 var(--font-display); width: 22%; }
+.reads tbody th { font: 500 var(--text-title)/1.1 var(--font-display); letter-spacing: -0.01em; width: 22%; }
 .reads td { color: var(--color-ink-2); }
 .reads td + td { width: 30%; }
 .reads tr.ext th, .reads tr.ext td { color: var(--color-muted); }
@@ -130,7 +130,7 @@ html:not(.js) .loop-toggle { display: none; }
 .panel + .panel { margin-top: var(--space-2xl); }
 .js .panel + .panel { margin-top: 0; }
 .panel__text { display: grid; gap: var(--space-sm); }
-.panel__text h3 { font-size: var(--text-xl); }
+.panel__text h3 { font-size: var(--text-xl); font-weight: 500; letter-spacing: -0.01em; }
 .panel__text p { color: var(--color-ink-2); max-width: 40ch; }
 .stage--state { aspect-ratio: 16 / 10; min-height: 440px; }
 .switch { display: grid; gap: var(--space-xl); margin-top: var(--space-2xl); }
@@ -139,7 +139,7 @@ html:not(.js) .loop-toggle { display: none; }
 .rows { margin: var(--space-2xl) 0 0; display: grid; }
 .rows > div { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); padding-block: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule); align-items: baseline; }
 .rows > div:last-child { border-bottom: var(--rule-hair) solid var(--color-rule); }
-.rows dt { font: 400 var(--text-title)/1.15 var(--font-display); }
+.rows dt { font: 500 var(--text-title)/1.15 var(--font-display); letter-spacing: -0.01em; }
 .rows dd { margin: 0; color: var(--color-ink-2); max-width: 52ch; }
 .head { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); align-items: end; }
 .head .lead { max-width: 44ch; }
@@ -153,7 +153,7 @@ html:not(.js) .loop-toggle { display: none; }
 .facts dt { font: 400 var(--text-xs)/1.6 var(--font-outlier); color: var(--color-muted); }
 .facts dd { margin: 0; color: var(--color-ink); }
 .facts dd .readout { display: block; margin-top: var(--space-2xs); color: var(--color-ink-2); }
-.figure-big { font: 400 clamp(4rem, 8vw, 7.5rem)/0.9 var(--font-display); letter-spacing: var(--tracking-display); }
+.figure-big { font: var(--display-weight) clamp(4rem, 8vw, 7.5rem)/0.9 var(--font-display); letter-spacing: var(--tracking-display); }
 
 /* close */
 .close { padding-block: var(--section-gap-l) var(--section-gap-s); }
@@ -176,7 +176,7 @@ html:not(.js) .loop-toggle { display: none; }
 .foot { border-top: var(--rule-hair) solid var(--color-rule); padding-block: var(--section-gap-s) var(--space-xl); }
 .foot .container { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); align-items: end; }
 .foot__sign { display: grid; gap: var(--space-sm); }
-.foot__sign p { font: 400 var(--text-2xl)/1.1 var(--font-display); max-width: 28ch; }
+.foot__sign p { font: var(--display-weight) var(--text-2xl)/1.1 var(--font-display); letter-spacing: var(--tracking-display); max-width: 28ch; }
 .foot__links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-sm) var(--space-lg); font-size: var(--text-sm); color: var(--color-ink-2); }
 .foot__links a:hover { color: var(--color-ink); }
 .foot small { font-size: var(--text-sm); color: var(--color-muted); }
