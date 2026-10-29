@@ -25,6 +25,7 @@
 /* Hallmark · waive 59 · the close and the footer stand 240px apart on screen · the measure counts the hidden bodies of the closed setup disclosures */
 /* Hallmark · waive 77 · the systems section holds a four-row table on seven columns beside its head · a table of the real systems is the section's mass, a picture would only repeat the hero */
 /* Hallmark · reworded "Real Vinyl Animation", "Full Playback Control" and "Menu Bar Tray" to sentence case · the words are unchanged, only the case */
+/* Hallmark · dropped the close's widget capture · it repeated the hero and the switcher; the setup notes take the proof column */
 /* Hallmark · dropped the idle widget capture · it showed Korean UI text and the page is English by request */
 /* Hallmark · reworded the hero line, the section intros and the setup notes because they carried em dashes and middle-dot strings · 19, 63 */
 @import url("./tokens.css");
@@ -173,9 +174,8 @@ html:not(.js) .loop-toggle { display: none; }
 
 /* close */
 .close { padding-block: var(--section-gap-l) var(--section-gap-s); }
-.close .split { align-items: center; }
-.stage--close { height: 600px; width: 100%; }
-.setup { display: grid; margin-top: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule); }
+.close .split { align-items: start; }
+.setup { display: grid; border-top: var(--rule-hair) solid var(--color-rule); }
 .setup details { border-bottom: var(--rule-hair) solid var(--color-rule); }
 .setup summary { min-height: 52px; display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); cursor: pointer; list-style: none; color: var(--color-ink); }
 .setup summary::-webkit-details-marker { display: none; }
@@ -200,7 +200,7 @@ html:not(.js) .loop-toggle { display: none; }
 @media (max-width: 60rem) {
   .hero .container, .split, .panel, .head, .rows > div, .foot .container { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
   .hero .container { min-height: 0; padding-block: var(--space-2xl); }
-  .stage--state, .stage--close { min-height: 0; height: auto; aspect-ratio: 250 / 360; max-height: 80svh; }
+  .stage--state { min-height: 0; height: auto; aspect-ratio: 250 / 360; max-height: 80svh; }
   .stage--hero .shot { height: auto; min-height: 0; aspect-ratio: 250 / 246; max-height: 70svh; }
   .rows > div { gap: var(--space-xs); }
   .nav__links { display: none; }
@@ -381,40 +381,33 @@ html:not(.js) .loop-toggle { display: none; }
             <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/Vinylnyl.AppImage" class="btn">Linux</a>
           </div>
           <p class="readout muted">macOS 12+ (Apple Silicon and Intel), Windows 10+, Linux (AppImage)</p>
-
-          <div class="setup">
-            <details open>
-              <summary>Setup: just open the app</summary>
-              <div class="body">
-                <p><strong>Windows:</strong> nothing else to install. Play something and the widget picks it up.</p>
-                <p><strong>macOS:</strong> works with Safari and Chrome-based browsers once you turn on “Allow JavaScript from Apple Events” in the browser’s Develop menu (see the README).</p>
-                <p><strong>Linux:</strong> install <code>playerctl</code>, for example <code>sudo apt install playerctl</code>.</p>
-              </div>
-            </details>
-            <details>
-              <summary>Optional: browser extension (Firefox, sharper info)</summary>
-              <div class="body">
-                <p>The extension also covers Firefox and any case the system media controls miss. Download <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/vinylnyl-extension.zip">vinylnyl-extension.zip</a>, unzip it, open <strong>chrome://extensions</strong> (or edge://, brave://), turn on <strong>Developer mode</strong> and click <strong>Load unpacked</strong>.</p>
-                <p>On Firefox use the <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/vinylnyl-extension-firefox.zip">Firefox build</a> with <strong>about:debugging</strong>, then <strong>Load Temporary Add-on</strong>.</p>
-              </div>
-            </details>
-            <details>
-              <summary>Seeing an “unidentified developer” or SmartScreen warning?</summary>
-              <div class="body">
-                <p>Vinylnyl isn’t code-signed yet, so your OS may warn you the first time you open it.</p>
-                <p><strong>macOS:</strong> open the app once, then go to System Settings, Privacy &amp; Security and click <strong>“Open Anyway”</strong>, or run <code>xattr -cr /Applications/Vinylnyl.app</code> in Terminal.</p>
-                <p><strong>Windows:</strong> click <strong>More info</strong>, then <strong>Run anyway</strong>.</p>
-              </div>
-            </details>
-          </div>
         </div>
 
-        <figure class="stage stage--close">
-          <div class="shot" data-slot="close" data-kind="product" data-alt="The widget on a desktop, playing">
-            <img src="img/widget-playing-still.png" width="750" height="960" loading="lazy" alt="">
-          </div>
-          <figcaption><span class="readout">The widget, as it ships</span></figcaption>
-        </figure>
+        <div class="setup">
+          <details open>
+            <summary>Setup: just open the app</summary>
+            <div class="body">
+              <p><strong>Windows:</strong> nothing else to install. Play something and the widget picks it up.</p>
+              <p><strong>macOS:</strong> works with Safari and Chrome-based browsers once you turn on “Allow JavaScript from Apple Events” in the browser’s Develop menu (see the README).</p>
+              <p><strong>Linux:</strong> install <code>playerctl</code>, for example <code>sudo apt install playerctl</code>.</p>
+            </div>
+          </details>
+          <details>
+            <summary>Optional: browser extension (Firefox, sharper info)</summary>
+            <div class="body">
+              <p>The extension also covers Firefox and any case the system media controls miss. Download <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/vinylnyl-extension.zip">vinylnyl-extension.zip</a>, unzip it, open <strong>chrome://extensions</strong> (or edge://, brave://), turn on <strong>Developer mode</strong> and click <strong>Load unpacked</strong>.</p>
+              <p>On Firefox use the <a href="https://github.com/scrawl-labs/vinylnyl/releases/latest/download/vinylnyl-extension-firefox.zip">Firefox build</a> with <strong>about:debugging</strong>, then <strong>Load Temporary Add-on</strong>.</p>
+            </div>
+          </details>
+          <details>
+            <summary>Seeing an “unidentified developer” or SmartScreen warning?</summary>
+            <div class="body">
+              <p>Vinylnyl isn’t code-signed yet, so your OS may warn you the first time you open it.</p>
+              <p><strong>macOS:</strong> open the app once, then go to System Settings, Privacy &amp; Security and click <strong>“Open Anyway”</strong>, or run <code>xattr -cr /Applications/Vinylnyl.app</code> in Terminal.</p>
+              <p><strong>Windows:</strong> click <strong>More info</strong>, then <strong>Run anyway</strong>.</p>
+            </div>
+          </details>
+        </div>
       </div>
     </section>
   </main>
