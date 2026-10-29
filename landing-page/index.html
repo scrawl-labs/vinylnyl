@@ -78,12 +78,15 @@ a:active { color: var(--color-ink-2); }
 
 /* captures float on the page itself, the way the widget floats on a desktop: no frame, no grid */
 .stage { position: relative; margin: 0; }
-.stage--hero { height: min(calc(100svh - var(--nav-h) - var(--space-3xl)), 720px); min-height: 520px; }
+/* the hero stage flows: the record, then its pause control right under it */
+.stage--hero { display: grid; justify-items: center; gap: var(--space-sm); }
+.stage--hero .shot { position: relative; inset: auto; width: 100%; height: min(calc(100svh - var(--nav-h) - 168px), 640px); min-height: 480px; }
+.stage.stage--hero figcaption { position: static; }
 /* the base capture is cropped to the record and its title (the dock area below is empty at rest) */
-.deck { position: relative; height: 100%; aspect-ratio: 250 / 260; max-width: 100%; margin-inline: auto; }
+.deck { position: relative; height: 100%; aspect-ratio: 250 / 246; max-width: 100%; margin-inline: auto; }
 .deck > img { position: absolute; }
 .deck__base { inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
-.deck__disc { left: 14.8%; top: 6.923%; width: 70.4%; height: 67.69%; }
+.deck__disc { left: 14.8%; top: 7.317%; width: 70.4%; height: 71.54%; }
 @keyframes spin { to { transform: rotate(1turn); } }
 [data-loop] .deck__disc { animation: spin var(--spin) linear infinite; }
 [data-loop]:not(.is-running) .deck__disc { animation-play-state: paused; }
@@ -186,7 +189,8 @@ html:not(.js) .loop-toggle { display: none; }
 @media (max-width: 60rem) {
   .hero .container, .split, .panel, .head, .rows > div, .foot .container { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
   .hero .container { min-height: 0; padding-block: var(--space-2xl); }
-  .stage--hero, .stage--state, .stage--close { min-height: 0; height: auto; aspect-ratio: 250 / 360; max-height: 80svh; }
+  .stage--state, .stage--close { min-height: 0; height: auto; aspect-ratio: 250 / 360; max-height: 80svh; }
+  .stage--hero .shot { height: auto; min-height: 0; aspect-ratio: 250 / 246; max-height: 70svh; }
   .rows > div { gap: var(--space-xs); }
   .nav__links { display: none; }
   .foot__links { justify-content: flex-start; }
