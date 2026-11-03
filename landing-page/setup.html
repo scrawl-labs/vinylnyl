@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Set up Vinylnyl on macOS</title>
+<meta name="description" content="Turn on Allow JavaScript from Apple Events in Safari or a Chrome-based browser so Vinylnyl can show what is playing on your Mac. Step by step, with screenshots." />
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;800&family=Martian+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+/* Hallmark · shape: Long Document · genre: atmospheric · theme: Lumen, the site's system (index.html) · page: setup · draw: none, a help page in the site's own system
+ * hero: Banner · nav: edge-aligned, as index · footer: colophon · imagery: screenshots 3 (the owner's own Mac: Safari settings, Chrome menu, Automation) · signature: the real menu with the one item to tick
+ * faces: Schibsted Grotesk 800 over Schibsted Grotesk, Martian Mono for menu paths, as index · axes: dark/grotesk-sans/warm · posture: restrained · contrast: pass · fold: pass · v2.0.0 */
+/* Hallmark · waive 77 · the Automation step holds the one screenshot at its native 499px beside its text · upscaling a 1x capture to ten columns would blur the switches it points at */
+/* Hallmark · pre-emit critique: P4 H5 E4 S5 R5 V3 · weakest: V, a help page shares the landing page's system on purpose; the screenshots carry it */
+@import url("./tokens.css");
+@import url("./base.css");
+
+:root {
+  --color-accent: oklch(80% 0.15 75); --color-accent-hover: oklch(86% 0.13 75); --color-focus: oklch(80% 0.15 75);
+  --nav-h: 72px;
+}
+h1 { line-height: 0.98; font-size: var(--text-display-s); max-width: 16ch; }
+h2 { font-size: var(--text-section); line-height: 1; }
+h3 { font-weight: 500; letter-spacing: -0.01em; }
+.lead { color: var(--color-ink-2); }
+.path { font: 400 var(--text-xs)/1.6 var(--font-outlier); color: var(--color-ink); background: var(--color-paper-3); border-radius: var(--space-2xs); padding: var(--space-3xs) var(--space-xs); white-space: nowrap; }
+code { font-family: var(--font-outlier); font-size: var(--text-xs); color: var(--color-ink); background: var(--color-paper-3); border-radius: var(--space-2xs); padding: var(--space-3xs) var(--space-2xs); }
+
+a { text-decoration-color: transparent; transition: text-decoration-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out); }
+a:hover { text-decoration-line: underline; text-decoration-color: var(--color-accent); }
+a:active { color: var(--color-ink-2); }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 var(--space-md); border: 0; border-radius: var(--radius-pill); font: 500 var(--text-sm)/1 var(--font-body); white-space: nowrap; text-decoration: none; cursor: pointer; color: var(--color-ink); box-shadow: inset 0 0 0 var(--rule-hair) var(--color-rule-2); background: transparent; transition: background-color var(--dur-short) var(--ease-out), transform var(--dur-micro) var(--ease-out); }
+.btn:hover { background: var(--color-paper-2); text-decoration: none; }
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.btn[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+.skip { position: absolute; left: var(--space-md); top: calc(-1 * var(--space-3xl)); z-index: var(--z-toast); padding: var(--space-xs) var(--space-md); background: var(--color-ink); color: var(--color-paper); }
+.skip:focus-visible { top: var(--space-md); }
+.nav { position: sticky; top: 0; z-index: var(--z-sticky-nav); background: var(--color-paper); border-bottom: var(--rule-hair) solid var(--color-rule); }
+.nav .container { height: var(--nav-h); display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg); }
+.wordmark { display: inline-flex; align-items: center; gap: var(--space-xs); font: var(--display-weight) var(--text-xl)/1 var(--font-display); letter-spacing: var(--tracking-display); text-decoration: none; }
+.wordmark img { width: 28px; height: 28px; border-radius: 7px; }
+.nav__right { display: flex; align-items: center; gap: var(--space-lg); }
+.nav__links { display: flex; gap: var(--space-lg); font-size: var(--text-sm); color: var(--color-ink-2); }
+.nav__links a:hover { color: var(--color-ink); }
+
+.intro { padding-block: var(--space-3xl) var(--section-gap-s); }
+.intro .container { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--space-2xl); align-items: end; }
+
+/* the browser switch */
+.tabs { display: flex; flex-wrap: wrap; gap: var(--space-2xs); margin-bottom: var(--space-2xl); }
+.tab { min-height: 44px; padding: 0 var(--space-md); border: 0; border-radius: var(--radius-pill); background: transparent; color: var(--color-ink-2); box-shadow: inset 0 0 0 var(--rule-hair) var(--color-rule); font: 500 var(--text-sm)/1 var(--font-body); white-space: nowrap; cursor: pointer; transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out); }
+.tab:hover { background: var(--color-paper-2); color: var(--color-ink); }
+.tab:active { transform: translateY(1px); }
+.tab:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.tab[aria-selected="true"] { background: var(--color-paper-3); color: var(--color-ink); box-shadow: inset 0 0 0 var(--rule-hair) var(--color-rule-2); }
+.panel + .panel { margin-top: var(--section-gap-s); }
+.js .panel + .panel { margin-top: 0; }
+.panel > h2 { margin-bottom: var(--space-2xl); }
+.js .panel > h2 { display: none; }
+
+/* steps */
+.steps { list-style: none; margin: 0; padding: 0; counter-reset: step; display: grid; gap: var(--space-3xl); }
+.steps > li { counter-increment: step; display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--space-2xl); align-items: start; padding-top: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule); }
+.step__text { display: grid; gap: var(--space-sm); min-width: 0; }
+strong { font-weight: 500; color: var(--color-ink); }
+.step__text h3 { font-size: var(--text-title); }
+.step__text h3::before { content: counter(step) ". "; color: var(--color-muted); }
+.step__text p { color: var(--color-ink-2); }
+.after .step__text h3::before { content: none; }
+.shot { margin: 0; justify-self: start; }
+.shot img { border-radius: var(--radius-card); outline: 1px solid color-mix(in oklab, var(--color-ink) 10%, transparent); outline-offset: -1px; }
+.shot--menu img { outline: 0; border-radius: 0; }
+.shot figcaption { margin-top: var(--space-sm); font-size: var(--text-sm); color: var(--color-muted); }
+
+.after { padding-top: var(--section-gap); }
+.notes { padding-block: var(--section-gap) var(--section-gap-s); }
+.notes dl { margin: var(--space-xl) 0 0; display: grid; }
+.notes dl > div { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--space-2xl); padding-block: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule); }
+.notes dl > div:last-child { border-bottom: var(--rule-hair) solid var(--color-rule); }
+.notes dt { font: 500 var(--text-lg)/1.2 var(--font-display); }
+.notes dd { margin: 0; color: var(--color-ink-2); max-width: 60ch; }
+
+.foot { border-top: var(--rule-hair) solid var(--color-rule); padding-block: var(--space-xl); }
+.foot .container { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-md); font-size: var(--text-sm); color: var(--color-muted); }
+.foot nav { display: flex; gap: var(--space-lg); }
+.foot a:hover { color: var(--color-ink); }
+
+@media (max-width: 60rem) {
+  .intro .container, .steps > li, .notes dl > div { grid-template-columns: minmax(0, 1fr); gap: var(--space-lg); }
+  .nav__links { display: none; }
+  .path { white-space: normal; }
+}
+</style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav">
+    <div class="container">
+      <a class="wordmark" href="index.html" aria-label="Vinylnyl home"><img src="favicon-64.png" width="64" height="64" alt="">Vinylnyl</a>
+      <div class="nav__right">
+        <nav class="nav__links" aria-label="Site">
+          <a href="index.html#how">How it works</a>
+          <a href="index.html#features">Features</a>
+        </nav>
+        <a href="index.html#download" class="btn">Download</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="intro" aria-labelledby="title">
+      <div class="container">
+        <h1 id="title">Set up Vinylnyl on macOS.</h1>
+        <p class="lead">Vinylnyl reads Safari or a Chrome-based browser. Each needs one setting, once.</p>
+      </div>
+    </section>
+
+    <div class="container" data-switch>
+      <div class="tabs" role="tablist" aria-label="Your browser" hidden>
+        <button class="tab" type="button" role="tab" id="t-safari" aria-controls="p-safari" aria-selected="true">Safari</button>
+        <button class="tab" type="button" role="tab" id="t-chrome" aria-controls="p-chrome" aria-selected="false" tabindex="-1">Chrome, Edge, Brave, Vivaldi, Opera</button>
+      </div>
+
+      <section class="panel" role="tabpanel" id="p-safari" aria-labelledby="t-safari">
+        <h2>Safari</h2>
+        <ol class="steps">
+          <li>
+            <div class="step__text">
+              <h3>Show the developer settings</h3>
+              <p>Open <span class="path">Safari › Settings › Advanced</span> and tick <strong>Show features for web developers</strong> at the bottom.</p>
+            </div>
+            <figure class="shot">
+              <img src="img/setup/safari-advanced.png" width="836" height="644" alt="Safari Settings, Advanced tab, with Show features for web developers ticked at the bottom" loading="lazy">
+            </figure>
+          </li>
+          <li>
+            <div class="step__text">
+              <h3>Allow JavaScript from Apple Events</h3>
+              <p>A <strong>Developer</strong> tab appears in the same window. Open it and tick <strong>Allow JavaScript from Apple Events</strong>.</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <section class="panel" role="tabpanel" id="p-chrome" aria-labelledby="t-chrome">
+        <h2>Chrome, Edge, Brave, Vivaldi, Opera</h2>
+        <ol class="steps">
+          <li>
+            <div class="step__text">
+              <h3>Allow JavaScript from Apple Events</h3>
+              <p>In the menu bar, open <span class="path">View › Developer</span> and click <strong>Allow JavaScript from Apple Events</strong> so it shows a check mark.</p>
+              <p>Edge, Brave, Vivaldi and Opera have the same item in the same menu.</p>
+            </div>
+            <figure class="shot shot--menu">
+              <img src="img/setup/chrome-menu.png" width="629" height="494" alt="Chrome's View menu open on Developer, with Allow JavaScript from Apple Events checked" loading="lazy">
+            </figure>
+          </li>
+        </ol>
+      </section>
+    </div>
+
+    <section class="after container" aria-labelledby="after-title">
+      <ol class="steps">
+        <li>
+          <div class="step__text">
+            <h3 id="after-title">Then, allow Vinylnyl to control the browser</h3>
+            <p>Play a song. macOS asks whether Vinylnyl may control your browser: click <strong>OK</strong>.</p>
+            <p>Missed it? Open <span class="path">System Settings › Privacy &amp; Security › Automation</span> and turn on your browser under Vinylnyl.</p>
+          </div>
+          <figure class="shot">
+            <img src="img/setup/automation.png" width="499" height="268" alt="System Settings, Automation, with Safari and Google Chrome switched on under Vinylnyl" loading="lazy">
+          </figure>
+        </li>
+      </ol>
+    </section>
+
+    <section class="notes" aria-labelledby="notes-title">
+      <div class="container">
+        <h2 id="notes-title">Still waiting for music?</h2>
+        <dl>
+          <div><dt>Arc and Dia</dt><dd>They don’t have the Allow JavaScript from Apple Events setting, so Vinylnyl can’t read them. Play music in Safari or Chrome instead.</dd></div>
+          <div><dt>Firefox</dt><dd>Use the optional browser extension; see the <a href="index.html#download">download section</a>.</dd></div>
+          <div><dt>Turned it on, still nothing</dt><dd>Reload the music tab once, then check the Automation switch above.</dd></div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="container">
+      <span>© 2026 Vinylnyl</span>
+      <nav aria-label="Footer">
+        <a href="index.html">Home</a>
+        <a href="https://github.com/scrawl-labs/vinylnyl">GitHub</a>
+      </nav>
+    </div>
+  </footer>
+
+<script>
+document.documentElement.classList.add('js');
+document.querySelectorAll('[data-switch]').forEach((root) => {
+  const list = root.querySelector('[role="tablist"]');
+  const tabs = [...list.querySelectorAll('[role="tab"]')];
+  const select = (tab) => tabs.forEach((t) => {
+    const on = t === tab;
+    t.setAttribute('aria-selected', on);
+    t.tabIndex = on ? 0 : -1;
+    document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+  });
+  list.hidden = false;
+  const ua = navigator.userAgent;
+  select(/Chrome|Chromium|Edg|OPR|Brave|Vivaldi/.test(ua) ? tabs[1] : tabs[0]);
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => select(t));
+    t.addEventListener('keydown', (e) => {
+      const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) return;
+      const n = tabs[(i + d + tabs.length) % tabs.length];
+      select(n); n.focus();
+    });
+  });
+});
+</script>
+</body>
+</html>
