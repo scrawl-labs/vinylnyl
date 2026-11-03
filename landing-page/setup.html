@@ -27,7 +27,7 @@ h1 { line-height: 0.98; font-size: var(--text-display-s); max-width: 16ch; }
 h2 { font-size: var(--text-section); line-height: 1; }
 h3 { font-weight: 500; letter-spacing: -0.01em; }
 .lead { color: var(--color-ink-2); }
-.path { font: 400 var(--text-xs)/1.6 var(--font-outlier); color: var(--color-ink); background: var(--color-paper-3); border-radius: var(--space-2xs); padding: var(--space-3xs) var(--space-xs); white-space: nowrap; }
+.path { font: 400 var(--text-xs)/1.6 var(--font-outlier); color: var(--color-ink); background: var(--color-paper-3); border-radius: var(--space-2xs); padding: var(--space-3xs) var(--space-xs); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 code { font-family: var(--font-outlier); font-size: var(--text-xs); color: var(--color-ink); background: var(--color-paper-3); border-radius: var(--space-2xs); padding: var(--space-3xs) var(--space-2xs); }
 
 a { text-decoration-color: transparent; transition: text-decoration-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out); }
@@ -94,7 +94,6 @@ strong { font-weight: 500; color: var(--color-ink); }
 @media (max-width: 60rem) {
   .intro .container, .steps > li, .notes dl > div { grid-template-columns: minmax(0, 1fr); gap: var(--space-lg); }
   .nav__links { display: none; }
-  .path { white-space: normal; }
 }
 </style>
 </head>
